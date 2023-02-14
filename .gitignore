@@ -1,0 +1,6 @@
+*.pyc
+/general.log/
+/staticfiles/
+/.env/
+/static/
+/media/ 

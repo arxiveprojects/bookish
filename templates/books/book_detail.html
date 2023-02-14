@@ -1,0 +1,106 @@
+{% extends '_base.html' %}
+
+{% block title  %} {{book.title}} {% endblock title %}
+
+{% block content %}
+
+{% load static %}
+
+<div class="d-flex justify-content-center">
+  
+    <div class="card mb-2 w-100" >
+      
+      <div class= "card-header">
+        <div class="row">
+          <div class=" col-5 d-flex justify-content-start">
+            
+            <h6 class="card-text text-truncate" ><a style="text-decoration:none;" href=" {% if not book.user == user %} {% url 'user_profile' book.user.username %} 
+                 {% else %} {% url 'my_profile' %} {% endif %} "  >{{book.user.username}}</a></h6>          
+          </div>
+    
+          <div class="col-4 d-flex justify-content-start">
+            <h6 class="card-text"> <small class="text-muted"> {{book.posted_at|date:"d/b/Y"}} </small> </h6>
+          </div>
+    
+          <div class="col-3 d-flex justify-content-end">
+            {% if book.user == user %}
+            <div class="pe-1 dropdown">
+              <i class="bi bi-three-dots-vertical" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              </i>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="{% url 'book_edit' book.id %}">Edit</a></li>
+                <li><a class="dropdown-item" href="{% url 'book_delete' book.id %}">Delete</a></li>
+                {% if book.is_visible %}
+                <li><a class="dropdown-item" href="{% url 'book_visibility' book.id %}">Private</a></li>
+                {% else %}
+                <li><a class="dropdown-item" href="{% url 'book_visibility' book.id %}">Public</a></li>
+                {% endif %}
+              </ul>
+            </div>
+            {% endif %}
+            <a href="{% url 'add_book_to_fav' book.id %}" class= "bi bi-heart link-dark"> </a>
+          </div>
+        </div>
+      </div>
+  
+      <div class="card-body">
+        <div class="row g-0">
+          <div class="col-4">
+           
+            <img  class="w-75 " src="{{book.cover.url}}" />
+           
+          </div>
+          <div class="col-8">       
+          
+              <h6 class=" card-text " >{{book.title}}</h6>
+              
+              
+             {% if book.author %}
+
+                <h6 class="card-text"> <small class = 'text-muted'>By: {{book.author}} </small></h6>
+
+              {% endif %} 
+
+              {% if book.pages is not None %}
+
+                <h6 class="card-text"> <small class="text-muted">pages: {{book.pages}} </small> </h6>
+
+              {% endif %}
+
+              
+
+              <div class = 'row'>
+
+               <div class = 'col-6'>
+
+                <h6 class="card-text"> <a href="{{book.pdf.url}}" download class= "btn btn-success btn-sm bi bi-download">     {{book.size}} </a> </h6>
+
+               </div>
+
+               <div class='col-6 d-flex justify-content-end'>
+
+                {% if book.store_url is not None %} 
+
+                  <a class = 'btn btn-primary btn-sm '   href= "{{ book.store_url }}" > Buy here</a>
+
+                {% endif %}
+
+               </div>
+
+              </div>
+      
+          </div>
+        </div>
+
+     
+
+
+        {% if book.description %} 
+            <p class = 'card-text'> {{book.description}}</p>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

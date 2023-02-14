@@ -1,0 +1,36 @@
+{% extends '_base.html' %}
+ {% block title %} {{profile_user.username}} {%endblock title %}
+ {% block content %}
+
+
+   
+      <h3 class='pt-2'>{{profile_user.username}}</h3>
+      <p>  
+        {% if profile_user.bio %}
+          {{profile_user.bio}}
+          <br>
+        {% endif %}
+      </p>
+
+
+
+
+ {% if not books %}
+  <div class="d-flex justify-content-center">
+    <h4>There is no book in this profile</h4>
+  </div>
+  {% else %}
+  
+    <div class="d-flex justify-content-center">
+    <form class="form-inline mt-2 mb-2 mt-md-0 w-100" action="{% url 'search_results' %}" method= 'get'>
+        <input name='f' type='hidden' value='profile' >
+        <input name='user' type='hidden' value="{{profile_user.username}}" >
+        <input name='q' class="form-control mr-sm-2 "  type="text" placeholder="Search book in {{profile_user.username}}'s profile"   aria-label='Search'>
+    </form>
+    </div>
+    {% include '_pagination.html' %}
+    {% include '_post_card.html' %}
+
+  {% endif %} 
+
+{% endblock content %}
