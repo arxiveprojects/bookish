@@ -1,12 +1,12 @@
 from django.contrib import admin
 from .models import Book,Favorite,FavoriteBook , Genre
 
-admin.site.register(Genre)
 class BookAdmin(admin.ModelAdmin):
     list_display= ('title','user','author','is_visible','size')
     
 admin.site.register(Book,BookAdmin)
 
+admin.site.register(Genre)
 
 
 class FavoriteBookInline(admin.TabularInline):

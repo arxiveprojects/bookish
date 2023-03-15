@@ -26,7 +26,7 @@ class Book(models.Model):
     store_url = models.URLField(null=True, blank=True)
     cover = models.ImageField(upload_to='book/covers', null=True, blank=True)
     download_count = models.IntegerField(default=0)
-    genre = models.ForeignKey(Genre,on_delete=models.PROTECT,related_name='book',null=True,blank=True)
+    genre = models.ForeignKey(Genre,on_delete=models.PROTECT,related_name='book')
     user = models.ForeignKey(
         get_user_model(), on_delete=models.PROTECT, related_name='book')
 
