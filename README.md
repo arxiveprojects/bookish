@@ -1,6 +1,10 @@
 ## Getting Started
-
-<!-- ![Default Home View](./Screenshot.png?raw=true "Title") -->
+# Home
+![Default Home View](./screenshot/bookish.png?raw=true "Title")
+# Profile
+![Default Home View](./screenshot/profile.png?raw=true "Title")
+# Other User Profile
+![Default Home View](./screenshot/user.png?raw=true "Title")
 
 Setup project environment with python -m venv myenv.
 
