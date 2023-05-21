@@ -3,6 +3,7 @@ from django.views.generic import ListView, DeleteView, UpdateView, CreateView,De
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.files.base import ContentFile
 from .models import Book, Favorite, FavoriteBook
 from .forms import BookCreationForm
 from django.urls import reverse_lazy
@@ -40,7 +41,6 @@ class BookDetailView(DetailView):
 
 
 
-from django.core.files.base import ContentFile
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
     template_name = 'books/book_form.html'
