@@ -1,7 +1,7 @@
 *.pyc
 /general.log
 /staticfiles/
-/.env/
+/.venv/
 /static/
 /media/
 /*sqlite3

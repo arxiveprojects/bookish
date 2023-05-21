@@ -11,9 +11,9 @@ Setup project environment with python -m venv myenv.
 ```bash
 $ git clone https://github.com/ikram9820/bookishpdf.git
 $ cd bookishpdf
-$ python -m venv myenv
+$ python -m venv .venv
 # The Activation command is only for windows CMD
-$ .\myenv\Scripts\activate
+$ ./venv/Scripts/Activate.ps1
 $ pip install -r requirements.txt
 
 $ python manage.py makemigrations books

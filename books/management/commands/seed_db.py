@@ -5,7 +5,7 @@ import os
 
 
 class Command(BaseCommand):
-    help = 'Populates the database with collections and products'
+    help = 'Populates the database with collections'
 
     def handle(self, *args, **options):
         print('Populating the database...')
