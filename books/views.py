@@ -4,11 +4,11 @@ from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.files.base import ContentFile
+from django.urls import reverse_lazy
 from .models import Book, Favorite, FavoriteBook
 from .forms import BookCreationForm
-from django.urls import reverse_lazy
+from .ask_pdf import ask_pdf
 import fitz
-
 
 class BookListView(ListView):
     model = Book
@@ -18,6 +18,12 @@ class BookListView(ListView):
 
     def get_queryset(self):
         return Book.objects.filter(is_visible=True).order_by('-posted_at').select_related('user')
+
+
+class BookDetailView(DetailView):
+    model= Book
+    template_name='books/book_detail.html'
+    context_object_name= 'book'
 
 
 def cover(pdf):
@@ -31,14 +37,7 @@ def pages(pdf):
         with fitz.Document(stream = pdf, filetype='pdf') as pdf:
             return pdf.page_count
     except:
-        return 0
-
-
-class BookDetailView(DetailView):
-    model= Book
-    template_name='books/book_detail.html'
-    context_object_name= 'book'
-
+        return 1
 
 
 class BookCreateView(LoginRequiredMixin, CreateView):
@@ -49,12 +48,20 @@ class BookCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        BOOK = form.instance.pdf
         if form.instance.title == '' or form.instance.title is None:
-            name = form.instance.pdf.name
-            name = str(name).replace('book/pdfs/','').replace('.pdf','')
-            form.instance.title = name.title()            
+            form.instance.title = ask_pdf("what is name of the book?",BOOK)
+             
+        if form.instance.author == '' or form.instance.author is None:
+            form.instance.author = ask_pdf("what is name of the author of the book?",BOOK)
+                     
+        if form.instance.genre == '' or form.instance.genre is None:
+            form.instance.author = ask_pdf("what is name of the genre of the book?",BOOK)
+
         form.instance.title = str(form.instance.title).title()
-        pdf=form.instance.pdf.read()
+        form.instance.summary = ask_pdf("write summary for each chapter of the book.",BOOK)
+
+        pdf=BOOK.read()
         try:
             form.instance.cover.save(f'{form.instance.title}.png',ContentFile(cover(pdf)))
             form.instance.pages = pages(pdf)

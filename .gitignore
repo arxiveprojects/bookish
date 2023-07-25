@@ -1,4 +1,5 @@
 *.pyc
+.env
 /general.log
 /staticfiles/
 /.venv/
