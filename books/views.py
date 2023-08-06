@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.files.base import ContentFile
 from django.urls import reverse_lazy
 from .models import Book, Favorite, FavoriteBook
-from .forms import BookCreationForm
+from .forms import BookCreationForm, BookUpdateForm
 from .ask_pdf import ask_pdf
 import fitz
 
@@ -38,6 +38,15 @@ def pages(pdf):
             return pdf.page_count
     except:
         return 1
+    
+   
+def ask_question(request,pk):
+    question = request.GET.get('q')
+    book = Book.objects.get(id=pk)
+    answer = ask_pdf(question,book.pdf.path)
+    return render(request, 'books/book_detail.html', {"book": book, "answer":answer})
+
+    
 
 
 class BookCreateView(LoginRequiredMixin, CreateView):
@@ -50,23 +59,17 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         BOOK = form.instance.pdf
         if form.instance.title == '' or form.instance.title is None:
-            form.instance.title = ask_pdf("what is name of the book?",BOOK)
-             
-        if form.instance.author == '' or form.instance.author is None:
-            form.instance.author = ask_pdf("what is name of the author of the book?",BOOK)
-                     
-        if form.instance.genre == '' or form.instance.genre is None:
-            form.instance.author = ask_pdf("what is name of the genre of the book?",BOOK)
-
+            name = form.instance.pdf.name
+            form.instance.title = str(name).replace('book/pdfs/','').replace('.pdf','')
         form.instance.title = str(form.instance.title).title()
-        form.instance.summary = ask_pdf("write summary for each chapter of the book.",BOOK)
-
+        form.instance.summary = ask_pdf("summarize each chapter of the book.",BOOK)
+        form.instance.author = ask_pdf("get the author name from the book, write in less than 5 words.",BOOK)
+        form.instance.genre = ask_pdf("get genre name from the book, write in less than 5 words.",BOOK)
         pdf=BOOK.read()
         try:
             form.instance.cover.save(f'{form.instance.title}.png',ContentFile(cover(pdf)))
             form.instance.pages = pages(pdf)
         except Exception as e:
-            print ("this error cause of form validation in BookCreatView ", e)
             return super().form_invalid(form)
         return super().form_valid(form)
 
@@ -74,24 +77,8 @@ class BookCreateView(LoginRequiredMixin, CreateView):
 class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Book
     template_name = "books/book_form.html"
-    form_class= BookCreationForm
+    form_class= BookUpdateForm
     success_url = reverse_lazy('my_profile')
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        if form.instance.title == '' or form.instance.title is None:
-            name = form.instance.pdf.name
-            name = str(name).replace('book/pdfs/','').replace('.pdf','')
-            form.instance.title = name.title()            
-        form.instance.title = str(form.instance.title).title()
-        pdf=form.instance.pdf.read()
-        try:
-            form.instance.cover.save(f'{form.instance.title}.png',ContentFile(cover(pdf)))
-            form.instance.pages = pages(pdf)
-        except Exception as e:
-            print ("this error cause of form validation in BookCreatView ", e)
-            return super().form_invalid(form)
-        return super().form_valid(form)
 
     def test_func(self):
         book = self.get_object()
@@ -105,10 +92,6 @@ class BookVisibilityUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
     template_name = "books/book_form.html"
     fields = ['is_visible']
     success_url = reverse_lazy('my_profile')
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
 
     def test_func(self):
         book = self.get_object()

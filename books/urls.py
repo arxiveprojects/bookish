@@ -4,6 +4,7 @@ from .views import *
 urlpatterns = [
     path('',BookListView.as_view(),name='book_list'),
     path('<uuid:pk>/',BookDetailView.as_view(),name='book_detail'),
+    path('<uuid:pk>/ask_question/',ask_question,name='ask_question'),
     path('<uuid:pk>/delete/',BookDeleteView.as_view(),name='book_delete'),
     path('<uuid:pk>/update/',BookUpdateView.as_view(),name='book_edit'),
     path('<uuid:pk>/update_visibility/',BookVisibilityUpdateView.as_view(),name='book_visibility'),

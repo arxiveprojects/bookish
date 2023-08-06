@@ -18,7 +18,7 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200, blank=True, null=True)
     summary = models.TextField(null=True,blank=True)
-    genre = models.ForeignKey(Genre,on_delete=models.PROTECT,related_name='book')
+    genre = models.CharField(max_length=200, blank=True, null=True) # ForeignKey(Genre,on_delete=models.PROTECT,related_name='book')
     pages = models.IntegerField(null=True, blank=True)
     cover = models.ImageField(upload_to='book/covers', null=True, blank=True)
     pdf = models.FileField(upload_to="book/pdfs", validators=[

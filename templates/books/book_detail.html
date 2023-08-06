@@ -11,33 +11,33 @@
         </div>
         <div class="col-md-8">
           <h3>{{ book.title }}</h3>
+          <p><strong>Posted Date:</strong> {{ book.posted_at }}</p>
+          <p><strong>Author:</strong> {{ book.author }}</p>
           <p><strong>Genre:</strong> {{ book.genre }}</p>
           <p><strong>Pages:</strong> {{ book.pages }}</p>
-          <p><strong>Posted Date:</strong> {{ book.posted_at }}</p>
           <p><strong>Size:</strong> {{ book.size }}</p>
         </div>
         <div> 
-          <h4>Summary</h4>
-          <!-- <p>{{ book.summary }}</p> -->
+          <h4>Summary:</h4>
+          <p>{{ book.summary }}</p>
         </div>
     </div>
 
     <div class="row mt-4">
         <div class="col-md-12">
 
-          <label class="mb-2" for="question"><strong>Ask a question:</strong> </label>
-            {% if user.is_authenticated %}
-            <form action="{% url 'book_list' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="book_id" value="{{ book.id }}">
-                <div class="form-group">
-                    <textarea class="form-control" id="question" name="question" rows="1" required></textarea>
-                </div>
-                <button type="submit" class="btn mt-2 mb-4 btn-sm btn-primary">Submit</button>
-            </form>
-            {% else %}
-            <p>Please <a href="{% url 'login' %}">login</a> to ask a question.</p>
-            {% endif %}
+        <label class="mb-2" for="question"><strong>Ask a question:</strong> </label>
+        <form action="{% url 'ask_question' book.id %}" method="get">
+            {% csrf_token %}
+            <input type="hidden" name="book_id" value="{{ book.id }}">
+            <div class="form-group">
+                <textarea class="form-control" id="q" name="q" rows="1" required></textarea>
+            </div>
+            <button type="submit" class="btn mt-2 mb-4 btn-sm btn-primary">Submit</button>
+        </form>
+        {%if answer %}
+            <p>{{answer}}</p>
+         {%endif %}
 
        
         </div>
