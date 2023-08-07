@@ -42,31 +42,28 @@
                   >Delete</a
                 >
               </li>
-              {% if book.is_visible %}
-              <li>
-                <a
-                  class="dropdown-item"
-                  href="{% url 'book_visibility' book.id %}"
-                  >Private</a
-                >
-              </li>
-              {% else %}
-              <li>
-                <a
-                  class="dropdown-item"
-                  href="{% url 'book_visibility' book.id %}"
-                  >Public</a
-                >
-              </li>
-              {% endif %}
+
+                <a  id="visibility-toggle{{book.id}}"
+                    class="dropdown-item"
+                    hx-post="{% url 'book_visibility' book.id %}"
+                    hx-target="#visibility-toggle{{book.id}}"
+                >     
+                    {% if book.is_visible %}
+                      Private
+                    {% else %}
+                      Public
+                    {% endif %}
+          
+                </a> 
             </ul>
           </div>
           {% else %}
           <a
-            href="{% url 'add_book_to_fav' book.id %}"
-            class="bi bi-heart link-dark"
-            id="add_book_to_fav"
+            id="add_book_to_fav{{book.id}}"
+            hx-post="{% url 'add_book_to_fav' book.id %}"
+            hx-target="#add_book_to_fav{{book.id}}"
           >
+          <i class="bi bi-heart link-dark"></i>
           </a>
           {% endif %}
         </div>

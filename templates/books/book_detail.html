@@ -12,11 +12,11 @@
         </div>
         <div class="col-md-8">
           <h3>{{ book.title }}</h3>
-          <p><strong>Posted Date:</strong> {{ book.posted_at }}</p>
-          <p><strong>Author:</strong> {{ book.author }}</p>
-          <p><strong>Genre:</strong> {{ book.genre }}</p>
-          <p><strong>Pages:</strong> {{ book.pages }}</p>
-          <p><strong>Size:</strong> {{ book.size }}</p>
+          <p><strong>Author: </strong>  {{book.posted_at|date:"d/b/Y"}} </p>
+          <p><strong>Author: </strong> {{ book.author }}</p>
+          <p><strong>Genre: </strong> {{ book.genre }}</p>
+          <p><strong>Pages: </strong> {{ book.pages }}</p>
+          <p><strong>Size: </strong> {{ book.size }}</p>
         </div>
         <div> 
           <h4>Summary:</h4>
