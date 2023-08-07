@@ -6,10 +6,12 @@ from langchain.vectorstores import FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
+from pathlib import Path
 
+path = Path()/"vectorstores"
 load_dotenv()
 
-def get_pdf_text(pdf_path):
+def _get_pdf_text(pdf_path):
     pdf_reader = PdfReader(pdf_path)
     text=""
     for page in pdf_reader.pages:
@@ -17,7 +19,7 @@ def get_pdf_text(pdf_path):
     return text
 
 
-def get_text_chunks(text):
+def _get_text_chunks(text):
     text_splitter = CharacterTextSplitter(
         separator="\n",
         chunk_size=1000,
@@ -26,15 +28,15 @@ def get_text_chunks(text):
     )
     chunks = text_splitter.split_text(text)
     return chunks
+ 
 
-
-def get_vectorstore(text_chunks):
+def _get_vectorstore(text_chunks):
     embeddings = OpenAIEmbeddings()
-    vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
+    vectorstore = FAISS.from_texts(text_chunks,embeddings)
     return vectorstore
 
 
-def get_conversation_chain(vectorstore):
+def _get_conversation_chain(vectorstore):
     llm = ChatOpenAI()
     memory = ConversationBufferMemory(
         memory_key='chat_history', return_messages=True)
@@ -46,15 +48,18 @@ def get_conversation_chain(vectorstore):
     return conversation_chain
 
 
-def ask_pdf(question,pdf_path):
-    # get pdf text
-    raw_text = get_pdf_text(pdf_path)
+def create_vectorstore(pdf_path):
+    raw_text = _get_pdf_text(pdf_path)
     # get the text chunks
-    text_chunks = get_text_chunks(raw_text)
+    text_chunks = _get_text_chunks(raw_text)
     # # create vector store
-    vectorstore = get_vectorstore(text_chunks)
+    vectorstore = _get_vectorstore(text_chunks)
+    return vectorstore
+
+
+def ask_pdf(question,vectorstore):
     # # create conversation chain
-    conversation = get_conversation_chain(vectorstore)
+    conversation = _get_conversation_chain(vectorstore)
     # # Ask a question
-    return conversation({'question': question})["answer"]
+    return conversation({'question': question})
     

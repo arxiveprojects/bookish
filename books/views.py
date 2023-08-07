@@ -1,3 +1,4 @@
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, DeleteView, UpdateView, CreateView,DetailView
 from django.db.models import Q
@@ -7,7 +8,7 @@ from django.core.files.base import ContentFile
 from django.urls import reverse_lazy
 from .models import Book, Favorite, FavoriteBook
 from .forms import BookCreationForm, BookUpdateForm
-from .ask_pdf import ask_pdf
+from .ask_pdf import ask_pdf,create_vectorstore
 import fitz
 
 class BookListView(ListView):
@@ -41,10 +42,11 @@ def pages(pdf):
     
    
 def ask_question(request,pk):
-    question = request.GET.get('q')
+    question = request.POST.get('question')
     book = Book.objects.get(id=pk)
-    answer = ask_pdf(question,book.pdf.path)
-    return render(request, 'books/book_detail.html', {"book": book, "answer":answer})
+    vectorstore = create_vectorstore(book.pdf.path)
+    chat_history =ask_pdf(question,vectorstore)["chat_history"]
+    return render(request, "books/book_detail.html",{'book':book,'chat_history':chat_history})
 
     
 
@@ -58,17 +60,22 @@ class BookCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         BOOK = form.instance.pdf
+
         if form.instance.title == '' or form.instance.title is None:
             name = form.instance.pdf.name
             form.instance.title = str(name).replace('book/pdfs/','').replace('.pdf','')
         form.instance.title = str(form.instance.title).title()
-        form.instance.summary = ask_pdf("summarize each chapter of the book.",BOOK)
-        form.instance.author = ask_pdf("get the author name from the book, write in less than 5 words.",BOOK)
-        form.instance.genre = ask_pdf("get genre name from the book, write in less than 5 words.",BOOK)
         pdf=BOOK.read()
+
         try:
             form.instance.cover.save(f'{form.instance.title}.png',ContentFile(cover(pdf)))
             form.instance.pages = pages(pdf)
+
+            vectorstore = create_vectorstore(BOOK)
+            form.instance.summary = ask_pdf("summarize each chapter of the book.",vectorstore)["answer"]
+            form.instance.author = ask_pdf("get the author name from the book, write in less than 5 words.",vectorstore)["answer"]
+            form.instance.genre = ask_pdf("get genre name from the book, write in less than 5 words.",vectorstore)["answer"]
+            
         except Exception as e:
             return super().form_invalid(form)
         return super().form_valid(form)
