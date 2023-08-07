@@ -3,6 +3,5 @@
 /general.log
 /staticfiles/
 /.venv/
-/static/
 /media/
 /*sqlite3

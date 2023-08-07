@@ -1,6 +1,8 @@
 ## Getting Started
 # Home
 ![Default Home View](./screenshot/bookish.png?raw=true "Title")
+# Detail
+![Default Home View](./screenshot/detail.png?raw=true "Title")
 # Profile
 ![Default Home View](./screenshot/profile.png?raw=true "Title")
 # Other User Profile
