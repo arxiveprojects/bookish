@@ -45,11 +45,9 @@ def ask_question(request,pk):
     question = request.POST.get('question')
     book = Book.objects.get(id=pk)
     vectorstore = create_vectorstore(book.pdf.path)
-    chat_history =ask_pdf(question,vectorstore)["chat_history"]
-    return render(request, "books/book_detail.html",{'book':book,'chat_history':chat_history})
-
-    
-
+    answer =ask_pdf(question,vectorstore)["answer"]
+    return render(request,"partial/answer.html",{"answer":answer})
+ 
 
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book

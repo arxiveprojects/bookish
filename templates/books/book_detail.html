@@ -3,31 +3,7 @@
 {% block title  %} {{book.title}} {% endblock title %}
 
 {% block content %}
-<style>
-    .chat-message {
-        padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1rem; display: flex
-    }
-    .chat-message.user {
-        background-color: #2b313e
-    }
-    .chat-message.bot {
-        background-color: #475063
-    }
-    .chat-message .avatar {
-      width: 20%;
-    }
-    .chat-message .avatar img {
-      max-width: 78px;
-      max-height: 78px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .chat-message .message {
-      width: 80%;
-      padding: 0 1.5rem;
-      color: #fff;
-    }
-</style>
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-4">
@@ -52,7 +28,7 @@
         <div class="col-md-12">
 
         <label class="mb-2" for="question"><strong>Ask a question from "{{book.title}}":</strong> </label>
-        <form action="{% url 'ask_question' book.id %}" method="post">
+        <form hx-post="{% url 'ask_question' book.id %}" hx-target="#answer" method="post">
             {% csrf_token %}
             <div class="form-group">
                 {% if question %}
@@ -63,29 +39,9 @@
             </div>
             <button type="submit" class="btn mt-2 mb-4 btn-sm btn-primary">Submit</button>
         </form>
-        {%if chat_history %}
-            <strong>Chat History:</strong>
-            {% for i,message in enumerate(chat_history) %}
-                {%if  i % 2 == 0 %}
-                    <div class="chat-message bot">
-                        <div class="avatar">
-                            <img src="https://i.ibb.co/cN0nmSj/Screenshot-2023-05-28-at-02-37-21.png" style="max-height: 78px; max-width: 78px; border-radius: 50%; object-fit: cover;">
-                        </div>
-                        <div class="message">{{message.content}}</div>
-                    </div>
-                {%else%}
-                    <div class="chat-message user">
-                        <div class="avatar">
-                            <img src="https://i.ibb.co/rdZC7LZ/Photo-logo-1.png">
-                        </div>    
-                        <div class="message">{{message.content}}</div>
-                    </div>
-            
-                {%endif %}
-            {%endfor %}
-        {%endif %}
 
-       
+        <div id="answer"></div>
+            
         </div>
     </div>
 </div>
