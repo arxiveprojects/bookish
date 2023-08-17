@@ -1,20 +1,21 @@
 {% extends '_base.html' %}
 {% load static %}
 
-{% block title %} Favorite Books{% endblock title %}
+{% block title %} Saved Books{% endblock title %}
 
 {% block content %}
 {% if not books %}
 <div class="d-flex justify-content-center">
-  <h4>There is no favorite book</h4>
+  <h4>There is no Saved book</h4>
  </div>
 {% else %}
+<h4>Saved books</h4>
 {% comment %} <div class="d-flex justify-content-center">
   <form class="form-inline mt-2 mb-2 mt-md-0 w-100" action="{% url 'search_results' %}" method= 'get'>
       <input name='f' type='hidden' value='favorite' >
       <input name='q' class="form-control mr-sm-2 "  type="text" placeholder='Search in your favorite books' aria-label='Search'>
   </form>
 </div> {% endcomment %}
-  {% include '_book_card.html' %}
+  {% include '_books.html' %}
 {% endif %}
 {% endblock content %}

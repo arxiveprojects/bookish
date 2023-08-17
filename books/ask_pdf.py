@@ -9,7 +9,6 @@ from langchain.chains import ConversationalRetrievalChain
 from pathlib import Path
 
 path = Path()/"vectorstores"
-load_dotenv()
 
 def _get_pdf_text(pdf_path):
     pdf_reader = PdfReader(pdf_path)

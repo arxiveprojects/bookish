@@ -3,10 +3,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, DeleteView, UpdateView, CreateView,DetailView
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.files.base import ContentFile
 from django.urls import reverse_lazy
-from .models import Book, Favorite, FavoriteBook
+from .models import Book, Saved, SavedBook
 from .forms import BookCreationForm, BookUpdateForm
 from .ask_pdf import ask_pdf,create_vectorstore
 import fitz
@@ -43,46 +44,24 @@ def update_visibility(request,pk):
     return render(request,'partial/visibility.html',{"visibility":visibility})
 
 
-def get_favorite(request):
-    user = request.user if request.user.is_authenticated else None
-    if request.user.is_authenticated:
-        try:
-            fav = Favorite.objects.get(user=user)
-        except:
-            fav = None
-    else:
-        try:
-            fav = Favorite.objects.get(
-                id=request.session.get('fav_uuid', None))
-        except:
-            fav = None
-    if not fav:
-        fav = Favorite.objects.create(user=user)
-        request.session['fav_uuid'] = str(fav.id)
-    return fav
 
 
-def get_fav_book_list(request):
-    fav = get_favorite(request)
-    fav_books = FavoriteBook.objects.filter(
-        favorite=fav).only('book').select_related('book__user')
-    books = []
-    for fav_book in fav_books:
-        books.append(fav_book.book)
-    return render(request, 'books/fav.html', {'books': books})
+@login_required
+def saved_book_list(request):
+    saved_books = Saved.objects.get(user=request.user)
 
+    books = [ saved_book.book for saved_book in saved_books.saved_book.all()]
+    return render(request, 'books/saved.html', {'books': books})
 
-def add_book_to_fav(request, pk):
-    fav = get_favorite(request)
+@login_required
+def save_book(request, pk):
+    saved = Saved.objects.get(user=request.user)
     try:
-        clss = " link-dark"
-        fav_book = FavoriteBook.objects.get(favorite=fav, book_id=pk)
+        fav_book = SavedBook.objects.get(saved=saved, book_id=pk)
         fav_book.delete()
-
-    except FavoriteBook.DoesNotExist:
-        clss = "-fill link-danger" 
-        FavoriteBook.objects.create(favorite=fav, book_id=pk)
-    return render(request,"partial/add_to_fav.html",{"clss":clss})
+    except SavedBook.DoesNotExist:
+        SavedBook.objects.create(saved=saved, book_id=pk)
+    return redirect("saved_books")
 
 
 
@@ -198,11 +177,5 @@ class SearchResultsListView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         query = query.strip()
-        search_for = self.request.GET.get('f')
-        user = self.request.GET.get('user')
-        if search_for == 'book_list':
-            return Book.objects.filter(Q(title__icontains=query) & Q(is_visible=True)).order_by('-posted_at').select_related('user')
-        elif search_for == 'my_profile':
-            return Book.objects.filter(Q(title__icontains=query) & Q(user__username=user)).order_by('-posted_at').select_related('user')
-        elif search_for == 'profile':
-            return Book.objects.filter(Q(title__icontains=query) & Q(is_visible=True) & Q(user__username=user)).order_by('-posted_at').select_related('user')
+        return Book.objects.filter(Q(title__icontains=query) & Q(is_visible=True)).order_by('-posted_at').select_related('user')
+      

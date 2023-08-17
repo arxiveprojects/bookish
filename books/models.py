@@ -50,16 +50,14 @@ class Book(models.Model):
 
 
 
-class Favorite(models.Model):
+class Saved(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     at = models.DateTimeField(auto_now_add=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, related_name='favorite', null=True, blank=True, unique=True)
 
-class FavoriteBook(models.Model):
-    favorite = models.ForeignKey(
-        Favorite, on_delete=models.CASCADE, related_name='favorite_book')
-    book = models.ForeignKey(
-        Book, on_delete=models.CASCADE, related_name='favorite_book')
+class SavedBook(models.Model):
+    saved = models.ForeignKey(Saved, on_delete=models.CASCADE, related_name='saved_book')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='saved_book')
 
     class Meta:
-        unique_together = [['favorite', 'book']]
+        unique_together = [['saved', 'book']]

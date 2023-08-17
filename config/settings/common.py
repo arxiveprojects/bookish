@@ -16,13 +16,13 @@ LOGIN_REDIRECT_URL = 'my_profile'
 LOGOUT_REDIRECT_URL = 'book_list'
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
 
+STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
-STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -74,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'books.context_processors.saved_books',
             ],
         },
     },

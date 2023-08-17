@@ -9,9 +9,9 @@ urlpatterns = [
     path('<uuid:pk>/update/',BookUpdateView.as_view(),name='book_edit'),
     path('<uuid:pk>/update_visibility/',update_visibility,name='book_visibility'),
     path('create/',BookCreateView.as_view(),name='add_book'),
-    path('<uuid:pk>/add_to_favorite/',add_book_to_fav,name='add_book_to_fav'),
-    path('favorite/',get_fav_book_list,name='favorite'),
+    path('<uuid:pk>/save_book/',save_book,name='save_book'),
+    path('saved/',saved_book_list,name='saved_books'),
     path('profile/',MyProfileListView.as_view(),name= 'my_profile'),
-    path('search/',SearchResultsListView.as_view(),name='search_results'),
+    path('search/',SearchResultsListView.as_view(),name='book_search'),
     path('<str:username>/',ProfileListView.as_view(),name='user_profile'),
 ]
