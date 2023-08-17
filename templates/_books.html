@@ -1,7 +1,7 @@
 {% load static %} 
 {% for book in books %}
-<div class="card text-bg-light border-light mb-2 w-100">
-    <div class="card-header text-bg-light border-light d-flex justify-content-between">
+<div class="card text-bg-dark border-secondary mb-2 w-100">
+    <div class="card-header text-bg-dark border-dark d-flex justify-content-between">
       <div>
         {% if book.user.image %}
           <img src="{{book.user.image.url}}" alt="mdo" width="28" height="28" class="rounded-circle">
