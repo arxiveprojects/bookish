@@ -11,8 +11,8 @@ class SignupPageView(generic.CreateView):
 
 class ProfileUpdateView(LoginRequiredMixin,UserPassesTestMixin, generic.UpdateView):
     model= get_user_model()
-    fields= ['email','username','bio',]
-    success_url= reverse_lazy('my_profile')
+    fields= ('email', 'username', 'image', 'bio',)
+    success_url= reverse_lazy('book_list')
     template_name= 'registration/edit_profile.html'
 
 

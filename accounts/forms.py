@@ -3,16 +3,15 @@ from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from django import forms
 
 class CustomUserCreationForm(UserCreationForm):
-
-    bio=forms.CharField(widget=forms.Textarea(attrs={"rows":3 }),required=False)
+    bio=forms.CharField(widget=forms.Textarea(attrs={"rows":2 }),required=False)
     class Meta:
         model= get_user_model()
-        fields= ('email','username','bio',)
-        # exclude=['password',]
+        fields= ('email', 'username', 'image', 'bio',)
+        
 
 class CustomUserChangeForm(UserChangeForm):
-    
-    bio=forms.CharField(widget=forms.Textarea(attrs={"rows":3 }),required=False)
+    bio=forms.CharField(widget=forms.Textarea(attrs={"rows":2 }),required=False)
     class Meta:
         model= get_user_model()
-        fields= ('email','username','bio',)
+        fields= ('email', 'username', 'image', 'bio',)
+        exclude = ('password',)

@@ -1,18 +1,22 @@
 {% extends '_base.html' %}
- {% block title %} {{profile_user.username}} {%endblock title %}
+ {% block title %} {{user.username}} {%endblock title %}
  {% block content %}
 
-      <h3 class='pt-2'>{{profile_user.username}}</h3>
-      <p>  
-        {% if profile_user.bio %}
-          {{profile_user.bio}}
+      <h3 class='pt-2'>{{user.username}}</h3>
+      <p>
+        {% if user.bio %}
+          {{user.bio}}
           <br>
         {% endif %}
       </p>
+{% if user.id == request.user.id %}
+      <div><a class="btn btn-primary btn-sm " href="{% url 'edit_profile' user.id %}" > Edit profile </a></div>
+      <div class="my-2"><a class="btn btn-light btn-sm " href="{% url 'add_book' %}"> Add Book</a></div>
+{% endif %}
 
  {% if not books %}
   <div class="d-flex justify-content-center">
-    <h4>There is no book in this profile</h4>
+    <h4>There is no book</h4>
   </div>
   {% else %}
     <!-- {% include '_pagination.html' %} -->

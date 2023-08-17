@@ -11,7 +11,7 @@ urlpatterns = [
     path('create/',BookCreateView.as_view(),name='add_book'),
     path('<uuid:pk>/save_book/',save_book,name='save_book'),
     path('saved/',saved_book_list,name='saved_books'),
-    path('profile/',MyProfileListView.as_view(),name= 'my_profile'),
+    path('profile/',profile,name= 'profile'),
+    path('profile/<int:user_pk>/',profile,name= 'profile'),
     path('search/',SearchResultsListView.as_view(),name='book_search'),
-    path('<str:username>/',ProfileListView.as_view(),name='user_profile'),
 ]

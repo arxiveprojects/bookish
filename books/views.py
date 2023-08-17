@@ -10,9 +10,10 @@ from django.urls import reverse_lazy
 from .models import Book, Saved, SavedBook
 from .forms import BookCreationForm, BookUpdateForm
 from .ask_pdf import ask_pdf,create_vectorstore
+from django.contrib.auth import get_user_model
 import fitz
 
-
+User = get_user_model()
 
 def cover(pdf):
     with fitz.Document(stream = pdf, filetype='pdf') as pdf:
@@ -39,7 +40,6 @@ def update_visibility(request,pk):
     book = Book.objects.get(id=pk)
     book.is_visible = not book.is_visible
     book.save()
-    print(f"visibility of {pk}:",book.is_visible)
     visibility = "Private" if book.is_visible else "Public"
     return render(request,'partial/visibility.html',{"visibility":visibility})
 
@@ -49,7 +49,6 @@ def update_visibility(request,pk):
 @login_required
 def saved_book_list(request):
     saved_books = Saved.objects.get(user=request.user)
-
     books = [ saved_book.book for saved_book in saved_books.saved_book.all()]
     return render(request, 'books/saved.html', {'books': books})
 
@@ -85,7 +84,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
     template_name = 'books/book_form.html'
     form_class= BookCreationForm
-    success_url = reverse_lazy('my_profile')
+    success_url = reverse_lazy('profile')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -101,10 +100,10 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             form.instance.cover.save(f'{form.instance.title}.png',ContentFile(cover(pdf)))
             form.instance.pages = pages(pdf)
 
-            vectorstore = create_vectorstore(BOOK)
-            form.instance.summary = ask_pdf("summarize each chapter of the book.",vectorstore)["answer"]
-            form.instance.author = ask_pdf("get the author name from the book, write in less than 5 words.",vectorstore)["answer"]
-            form.instance.genre = ask_pdf("get genre name from the book, write in less than 5 words.",vectorstore)["answer"]
+            # vectorstore = create_vectorstore(BOOK)
+            # form.instance.summary = ask_pdf("summarize each chapter of the book.",vectorstore)["answer"]
+            # form.instance.author = ask_pdf("get the author name from the book, write in less than 5 words.",vectorstore)["answer"]
+            # form.instance.genre = ask_pdf("get genre name from the book, write in less than 5 words.",vectorstore)["answer"]
             
         except Exception as e:
             return super().form_invalid(form)
@@ -115,7 +114,7 @@ class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Book
     template_name = "books/book_form.html"
     form_class= BookUpdateForm
-    success_url = reverse_lazy('my_profile')
+    success_url = reverse_lazy('profile')
 
     def test_func(self):
         book = self.get_object()
@@ -126,7 +125,7 @@ class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Book
-    success_url = reverse_lazy('my_profile')
+    success_url = reverse_lazy('profile')
     template_name = 'books/delete_book.html'
 
     def test_func(self):
@@ -136,37 +135,12 @@ class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-
-class ProfileListView(ListView):
-    model = Book
-    template_name = 'profile/profile.html'
-    context_object_name = 'books'
-    paginate_by = 12
-
-    def get_context_data(self, **kwargs):
-        context = super(ProfileListView, self).get_context_data(**kwargs)
-        context['profile_user'] = get_object_or_404(
-            get_user_model(), username=self.kwargs.get('username'))
-        return context
-
-    def get_queryset(self):
-        user = get_object_or_404(
-            get_user_model(), username=self.kwargs.get('username'))
-        return Book.objects.filter(Q(user=user) & Q(is_visible=True)).order_by('-posted_at').select_related('user')
-
-
-class MyProfileListView(LoginRequiredMixin, ListView):
-    model = Book
-    template_name = 'profile/my_profile.html'
-    context_object_name = 'books'
-    paginate_by = 12
-
-    def get_queryset(self):
-        if self.request.user.is_authenticated:
-            user = self.request.user
-        else:
-            user = None
-        return Book.objects.filter(user=user).order_by('-posted_at').select_related('user')
+def profile(request,user_pk=None):
+    user = request.user
+    if  user_pk:
+        user = get_object_or_404(User, pk=user_pk)
+    books = user.book.filter(is_visible=True)
+    return render(request,"profile/profile.html",{"user":user,"books":books})
 
 
 class SearchResultsListView(ListView):
