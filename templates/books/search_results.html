@@ -13,7 +13,8 @@
     <h4>Search results</h4>
   </div>
   <!-- {% include '_pagination.html' %} -->
-  {% include '_books.html' %}
-{% endif %} 
+  {% for book in books %}
+    {% include 'post/_post.html' %}
+  {% endfor %}{% endif %} 
 
 {% endblock content %}

@@ -1,0 +1,41 @@
+
+<div class="card-footer text-bg-transparent border-light">
+    <div class="d-flex justify-content-around">
+        {% with total_likes=book.users_like.count users_like=book.users_like.all %}    
+        <div>
+            {% if request.user.is_authenticated %}
+                <a  id="book-like-{{book.id}}" class="text-decoration-none" hx-traget="#book-like-{{book.id}}" hx-post="{% url 'like' book.id %}">
+                    {% if request.user not in users_like %}
+                        <i class="bi bi-hand-thumbs-up"></i>
+                    {% else %}
+                        <i class="bi bi-hand-thumbs-up-fill"></i>
+                    {% endif %}
+                    <span>{{total_likes}}</span>
+                </a>
+            {% else %}
+                {% if request.user not in users_like %}
+                    <i class="bi bi-hand-thumbs-up"></i>
+                {% else %}
+                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                {% endif %}
+                <span>{{total_likes}}</span>
+            {% endif %}
+
+        </div>
+        {% endwith %}
+
+        <div>
+            <i class="bi bi-question-square"></i>
+            <small class="ms-1 text-muted"> </small>
+        </div>
+        <div>
+            <i class="bi bi-send"></i>
+            <samll class="ms-1 text-muted"> </samll>
+        </div>
+
+        {% if user.is_authenticated and not request.user == book.user %}
+            <a class="text-decoration-none" href="{% url 'save_book' book.id %}"> <i class="bi bi-bookmark-plus"></i> </a>
+        {% endif %}
+
+    </div>
+</div>

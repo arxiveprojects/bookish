@@ -10,12 +10,9 @@
  </div>
 {% else %}
 <h4>Saved books</h4>
-{% comment %} <div class="d-flex justify-content-center">
-  <form class="form-inline mt-2 mb-2 mt-md-0 w-100" action="{% url 'search_results' %}" method= 'get'>
-      <input name='f' type='hidden' value='favorite' >
-      <input name='q' class="form-control mr-sm-2 "  type="text" placeholder='Search in your favorite books' aria-label='Search'>
-  </form>
-</div> {% endcomment %}
-  {% include '_books.html' %}
+
+  {% for book in books %}
+    {% include 'post/_post.html' %}
+  {% endfor %}
 {% endif %}
 {% endblock content %}

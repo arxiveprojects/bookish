@@ -1,12 +1,13 @@
 from typing import Any, Dict
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, DeleteView, UpdateView, CreateView,DetailView
-from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.files.base import ContentFile
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
 from .models import Book, Genre, Saved, SavedBook
 from .forms import BookCreationForm, BookUpdateForm
 from .ask_pdf import ask_pdf,create_vectorstore
@@ -149,6 +150,7 @@ def saved_book_list(request):
     return render(request, 'books/saved.html', {'books': books})
 
 @login_required
+@require_POST
 def save_book(request, pk):
     saved = Saved.objects.get(user=request.user)
     try:
@@ -157,4 +159,16 @@ def save_book(request, pk):
     except SavedBook.DoesNotExist:
         SavedBook.objects.create(saved=saved, book_id=pk)
     return redirect("saved_books")
+
+
+@login_required
+def book_like(request,pk):
+    book = Book.objects.get(pk=pk)  
+    users_like =  book.users_like
+    if request.user in users_like.all():
+        book.users_like.remove(request.user)
+    else:
+        book.users_like.add(request.user)    
+    return render(request,"partial/like.html",{"book":book})
+
 

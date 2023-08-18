@@ -47,23 +47,14 @@ class Book(models.Model):
                            validate_pdf_size, FileExtensionValidator(allowed_extensions=['pdf'])])
     posted_at = models.DateTimeField(auto_now_add=True)
     public = models.BooleanField(default=True)
-    store_url = models.URLField(null=True, blank=True)
     user = models.ForeignKey(
         get_user_model(), on_delete=models.PROTECT, related_name='book')
+    users_like = models.ManyToManyField(get_user_model(),
+                                        related_name='books_liked',
+                                        blank=True)
 
     objects = models.Manager()
     publics = PublicsManager()
-
-    @property
-    def size(self):
-        kb = 1024
-        size = self.pdf.size
-        if size > (kb*kb):
-            return f"{int(size/(kb*kb))} mb"
-        elif size > kb:
-            return f"{int(size/kb)} kb"
-        else:
-            return f"{int(size)} b"
 
     def __str__(self):
         return self.title
@@ -78,7 +69,11 @@ class Book(models.Model):
 
     class Meta:
         ordering = ['-posted_at']
-
+    
+    @property
+    def size(self):
+        kb = 1024
+        return f"{self.pdf.size/(kb*kb):.2f} mb"
 
 class Saved(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

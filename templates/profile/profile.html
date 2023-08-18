@@ -12,7 +12,7 @@
           <div class="d-flex">
             <h3 class="me-3" >{{user.username}}</h3>
             {% if user.id == request.user.id %}
-              <div><a class="btn btn-primary btn-sm " href="{% url 'edit_profile' user.id %}" > Edit profile </a></div>
+              <div><a class="btn btn-outline-secondary btn-sm" href="{% url 'edit_profile' user.id %}" > Edit profile </a></div>
             {% endif %}
           </div>
           <p>{% if user.bio %} {{user.bio}} <br> {% endif %} </p>
@@ -24,7 +24,7 @@
     <hr/>
      
 {% if user.id == request.user.id %}
-      <div class="text-center my-4"><a class="btn btn-light btn-sm " href="{% url 'add_book' %}"> Add Book</a></div>
+      <div class="text-center my-4"><a class="btn btn-outline-secondary btn-sm" href="{% url 'add_book' %}"> Add Book</a></div>
 {% endif %}
 
  {% if not books %}
@@ -33,6 +33,8 @@
   </div>
   {% else %}
     <!-- {% include '_pagination.html' %} -->
-    {% include '_books.html' %}
+    {% for book in books %}
+      {% include 'post/_post.html' %}
+    {% endfor %}
   {% endif %} 
 {% endblock content %}

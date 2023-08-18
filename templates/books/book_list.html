@@ -19,7 +19,9 @@
   </select>
 
   {% include '_pagination.html' %}
-  {% include '_books.html' %}
+  {% for book in books %}
+    {% include 'post/_post.html' %}
+  {% endfor %}
 
   {% endif %} 
 

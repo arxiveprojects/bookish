@@ -1,0 +1,8 @@
+{% with total_likes=book.users_like.count users_like=book.users_like.all %}  
+    {% if request.user not in users_like %}
+    <i class="bi bi-hand-thumbs-up"></i>
+    {% else %}
+    <i class="bi bi-hand-thumbs-up-fill"></i>
+    {% endif %}
+    <span>{{total_likes}}</span>
+{% endwith %}
