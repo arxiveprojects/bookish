@@ -8,11 +8,11 @@
         {% else %}
         <img src="{% static  'img/user.png' %}" alt="mdo" width="75" height="75" class="rounded-circle">
         {% endif %}
-        <div class="mx-3 pt-3">
+        <div class="mx-3 mt-3">
           <div class="d-flex">
             <h3 class="me-3" >{{user.username}}</h3>
             {% if user.id == request.user.id %}
-              <div><a class="btn btn-outline-secondary btn-sm" href="{% url 'edit_profile' user.id %}" > Edit profile </a></div>
+              <a class="text-decoration-none" href="{% url 'edit_profile' user.id %}" > Edit</a>
             {% endif %}
           </div>
           <p>{% if user.bio %} {{user.bio}} <br> {% endif %} </p>
