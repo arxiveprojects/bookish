@@ -3,6 +3,8 @@ from django.db import connection
 from pathlib import Path
 import os
 
+from books.models import Genre
+
 
 class Command(BaseCommand):
     help = 'Populates the database with collections'
@@ -15,3 +17,6 @@ class Command(BaseCommand):
 
         with connection.cursor() as cursor:
             cursor.execute(sql)
+
+        genre = Genre.objects.all()
+        for g in genre: g.save()

@@ -8,6 +8,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from pathlib import Path
 
+load_dotenv()
 path = Path()/"vectorstores"
 
 def _get_pdf_text(pdf_path):
@@ -49,16 +50,16 @@ def _get_conversation_chain(vectorstore):
 
 def create_vectorstore(pdf_path):
     raw_text = _get_pdf_text(pdf_path)
-    # get the text chunks
+    print("# get the text chunks")
     text_chunks = _get_text_chunks(raw_text)
-    # # create vector store
+    print("# create vector store")
     vectorstore = _get_vectorstore(text_chunks)
     return vectorstore
 
 
 def ask_pdf(question,vectorstore):
-    # # create conversation chain
+    print("# create conversation chain")
     conversation = _get_conversation_chain(vectorstore)
-    # # Ask a question
+    print("# Ask a question")
     return conversation({'question': question})
     

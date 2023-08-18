@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Book,Saved,SavedBook , Genre
 
 class BookAdmin(admin.ModelAdmin):
-    list_display= ('title','user','author','is_visible','size')
+    list_display= ('title','user','author','public','size')
     
 admin.site.register(Book,BookAdmin)
 

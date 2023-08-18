@@ -1,12 +1,11 @@
 ## Getting Started
 # Home
-![Default Home View](./screenshot/bookish.png?raw=true "Title")
+![Default Home View](./screenshot/list.png?raw=true "Title")
 # Detail
 ![Default Home View](./screenshot/detail.png?raw=true "Title")
-# Profile
-![Default Home View](./screenshot/profile.png?raw=true "Title")
-# Other User Profile
-![Default Home View](./screenshot/user.png?raw=true "Title")
+# Book Create Form
+![Default Home View](./screenshot/add.png?raw=true "Title")
+
 
 Setup project environment with python -m venv myenv.
 

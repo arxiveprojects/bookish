@@ -8,11 +8,11 @@ class BookUpdateForm(forms.ModelForm):
     summary = forms.CharField(widget=forms.Textarea(attrs={"rows":3 }),required=False)
     class Meta:
         model=Book
-        fields=['title','author','genre','store_url','is_visible','summary','cover']
+        fields=['title','author','genre','public','summary','cover']
 
 class BookCreationForm(forms.ModelForm):
     title= forms.CharField(required=False)
     class Meta:
         model=Book
-        fields=['title','store_url','is_visible','pdf']
+        fields=['title','genre', 'public','pdf']
 

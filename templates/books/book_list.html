@@ -10,8 +10,27 @@
  </div>
 {% else %}
 
-  <!-- {% include '_pagination.html' %} -->
+  <select class="my-4 form-select form-select-sm" id="collectionDropdown">
+    <option {% if not genre %} selected {% endif %} value="{% url 'book_list'  %}">Select Gnere</option>
+    {% for g in genres %}
+    <option {% if genre.slug == g.slug %} selected {% endif %} 
+            value="{{ g.get_absolute_url }}">{{ g.name }}</option>
+    {% endfor %}
+  </select>
+
+  {% include '_pagination.html' %}
   {% include '_books.html' %}
 
   {% endif %} 
+
+  <script>
+    const dropdown = document.getElementById("collectionDropdown");
+    
+    dropdown.addEventListener("change", function() {
+        const selectedValue = dropdown.options[dropdown.selectedIndex].value;
+
+        window.location.href = selectedValue;
+
+    });
+</script>
 {% endblock content %}

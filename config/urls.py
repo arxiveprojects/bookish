@@ -8,7 +8,7 @@ admin.site.site_header = "Bookishpdf's Admin"
 admin.site.index_title = 'Admin'
 
 urlpatterns = [
-    path('anything-but-admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('accounts.urls')),
     path('', include('books.urls')),

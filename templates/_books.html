@@ -1,7 +1,7 @@
 {% load static %} 
 {% for book in books %}
-<div class="card text-bg-dark border-secondary mb-2 w-100">
-    <div class="card-header text-bg-dark border-dark d-flex justify-content-between">
+<div class="card text-bg-light border-light mb-2 w-100">
+    <div class="card-header text-bg-light border-light d-flex justify-content-between">
       <div>
         {% if book.user.image %}
           <img src="{{book.user.image.url}}" alt="mdo" width="28" height="28" class="rounded-circle">
@@ -23,7 +23,7 @@
             <a class="dropdown-item" href="{% url 'book_delete' book.id %}">Delete</a>
           </li>
             <a id="visibility-toggle{{book.id}}" class="dropdown-item" hx-post="{% url 'book_visibility' book.id %}" hx-target="#visibility-toggle{{book.id}}">     
-                {% if book.is_visible %}
+                {% if book.public %}
                   Private
                 {% else %}
                   Public
@@ -50,7 +50,11 @@
         <h6 class="card-text">
           <small class="text-muted">By: {{book.author}} </small>
         </h6>
-        {% endif %} {% if book.pages is not None %}
+        {% endif %} 
+        <h6 class="card-text">
+         <a  class="text-decoration-none" href="{{book.genre.get_absolute_url}}"> {{book.genre}}</a>
+        </h6>
+        {% if book.pages %}
         <h6 class="card-text">
           <small class="text-muted">pages: {{book.pages}} </small>
         </h6>

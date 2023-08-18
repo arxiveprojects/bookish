@@ -1,17 +1,30 @@
 {% extends '_base.html' %}
+{% load static %}
  {% block title %} {{user.username}} {%endblock title %}
  {% block content %}
-
-      <h3 class='pt-2'>{{user.username}}</h3>
-      <p>
-        {% if user.bio %}
-          {{user.bio}}
-          <br>
+    <div class=" my-4 mx-2 d-flex justify-content-start">        
+        {% if request.user.image %}
+        <img src="{{request.user.image.url}}" alt="mdo" width="75" height="75" class="rounded-circle">
+        {% else %}
+        <img src="{% static  'img/user.png' %}" alt="mdo" width="75" height="75" class="rounded-circle">
         {% endif %}
-      </p>
+        <div class="mx-3 pt-3">
+          <div class="d-flex">
+            <h3 class="me-3" >{{user.username}}</h3>
+            {% if user.id == request.user.id %}
+              <div><a class="btn btn-primary btn-sm " href="{% url 'edit_profile' user.id %}" > Edit profile </a></div>
+            {% endif %}
+          </div>
+          <p>{% if user.bio %} {{user.bio}} <br> {% endif %} </p>
+      </div>
+      
+
+
+    </div>
+    <hr/>
+     
 {% if user.id == request.user.id %}
-      <div><a class="btn btn-primary btn-sm " href="{% url 'edit_profile' user.id %}" > Edit profile </a></div>
-      <div class="my-2"><a class="btn btn-light btn-sm " href="{% url 'add_book' %}"> Add Book</a></div>
+      <div class="text-center my-4"><a class="btn btn-light btn-sm " href="{% url 'add_book' %}"> Add Book</a></div>
 {% endif %}
 
  {% if not books %}

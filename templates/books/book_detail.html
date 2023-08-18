@@ -14,12 +14,16 @@
           <h3>{{ book.title }}</h3>
           <p><strong>Author: </strong>  {{book.posted_at|date:"d/b/Y"}} </p>
           <p><strong>Author: </strong> {{ book.author }}</p>
-          <p><strong>Genre: </strong> {{ book.genre }}</p>
+          <p><strong>Genre: </strong> 
+            <a  class="text-decoration-none" href="{{book.genre.get_absolute_url}}"> 
+            {{ book.genre }}
+          </a></p>
+
           <p><strong>Pages: </strong> {{ book.pages }}</p>
           <p><strong>Size: </strong> {{ book.size }}</p>
         </div>
         <div> 
-          <h4>Summary:</h4>
+          <h4>Summary (Powered by openai):</h4>
           <p>{{ book.summary }}</p>
         </div>
     </div>
@@ -27,7 +31,7 @@
     <div class="row mt-4">
         <div class="col-md-12">
 
-        <label class="mb-2" for="question"><strong>Ask a question from "{{book.title}}":</strong> </label>
+        <label class="mb-2" for="question"><strong>Ask a question from "{{book.title}}"(Powered by openai):</strong> </label>
         <form hx-post="{% url 'ask_question' book.id %}" hx-target="#answer" method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -39,6 +43,13 @@
             </div>
             <button type="submit" class="btn mt-2 mb-4 btn-sm btn-primary">Submit</button>
         </form>
+
+        <div id="loading" style="display: none;">
+            <!-- Add your loading spinner here -->
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
 
         <div id="answer"></div>
             
