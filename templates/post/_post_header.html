@@ -1,6 +1,7 @@
 {% load static %} 
 
-<div class="card-header text-bg-light border-light d-flex justify-content-between">
+<div class="card-header text-bg-light border-light ">
+  <div class="d-flex justify-content-between">
     <div class="d-flex">
       {% if book.user.image %}
         <img src="{{book.user.image.url}}" alt="mdo" width="32" height="32" class="rounded-circle">
@@ -12,7 +13,7 @@
         <p class="text-muted  small fw-lighter" style="font-size: .75em;">  {{book.posted_at|date:"d/b/Y"}} </p> 
       </div>
     </div>
-
+    
     {% if book.user == user %}
     <div class="dropdown">
       <i class="bi bi-three-dots-vertical" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" > </i>
@@ -34,4 +35,11 @@
     </div>
     
     {% endif %}
+  </div>
+    <h6 class="card-text text-truncate">
+      <a  href="{{book.pdf.url}}" download class="text-decoration-none bi bi-download"> </a>
+      <small class="mx-3 text-muted">{{book.pages}} pages </small>
+      <a style="text-decoration: none" href="{{book.get_absolute_url}}">{{book.title}}</a>
+    </h6>
+
   </div>
