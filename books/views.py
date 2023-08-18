@@ -150,7 +150,6 @@ def saved_book_list(request):
     return render(request, 'books/saved.html', {'books': books})
 
 @login_required
-@require_POST
 def save_book(request, pk):
     saved = Saved.objects.get(user=request.user)
     try:
