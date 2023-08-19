@@ -21,6 +21,7 @@ def cover(pdf):
         image = pdf.get_page_pixmap(0)
         stream = image.tobytes(output="png")
         return stream
+
     
 def pages(pdf):
     try:
@@ -50,12 +51,6 @@ class BookListView(ListView):
         context['genres'] = Genre.objects.all()
 
         return context
-def more_books(request):
-    offset = int(request.GET.get("offset"))
-    books = Book.publics.order_by('-posted_at')[offset:offset+3]
-    context = {'results': books, 'offset': offset+3}
-    return render(request, 'partial/more_books.html', context)
-
 
 class BookDetailView(DetailView):
     model= Book
@@ -140,6 +135,18 @@ def update_visibility(request,pk):
     visibility = "Private" if book.public else "Public"
     return render(request,'partial/visibility.html',{"visibility":visibility})
 
+def more_books(request):
+    offset = int(request.GET.get("offset"))
+    books = Book.publics.order_by('-posted_at')[offset:offset+3]
+    context = {'results': books, 'offset': offset+3}
+    return render(request, 'partial/more_books.html', context)
+
+def get_book_images(request,pk):
+    offset = int(request.GET.get("offset",0))
+    book:Book = Book.objects.get(pk=pk)
+    images = book.get_images(offset)
+    context ={"images":images,"book":book,"offset":offset+6}
+    return render(request, 'partial/more_images.html', context)
 
 def profile(request,user_pk=None):
     if not user_pk:

@@ -10,6 +10,7 @@ urlpatterns = [
     path('books/<uuid:pk>/delete/',BookDeleteView.as_view(),name='book_delete'),
     path('books/<uuid:pk>/update/',BookUpdateView.as_view(),name='book_edit'),
     path('books/<uuid:pk>/update_visibility/',update_visibility,name='book_visibility'),
+    path('books/<uuid:pk>/images/',get_book_images,name='get_book_images'),
     path('books/create/',BookCreateView.as_view(),name='add_book'),
     path('books/<uuid:pk>/save_book/',save_book,name='save_book'),
     path('books/<uuid:pk>/like/', book_like, name='like'),

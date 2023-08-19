@@ -1,3 +1,4 @@
+import io
 from django.db import models
 from django.db.models.query import QuerySet
 from django.urls import reverse
@@ -5,9 +6,11 @@ from django.contrib.auth import get_user_model
 from django.core.validators import FileExtensionValidator
 from django.utils.text import slugify
 from books.validators import validate_pdf_size
+from pdf2image import convert_from_path
 import uuid
+import fitz
+import base64
 
-    
 class Genre(models.Model):
     name = models.CharField(max_length=150,unique=True)
     slug = models.SlugField(max_length=255,unique=True,null=True,blank=True)
@@ -70,6 +73,21 @@ class Book(models.Model):
     def size(self):
         kb = 1024
         return f"{self.pdf.size/(kb*kb):.2f} mb"
+    
+
+    def get_images(self,offset=0):
+        images = []
+        with fitz.Document(filename=self.pdf.path, filetype='pdf') as pdf:
+            for i in range(offset, offset + 6):
+                if i >= self.pages: break
+                image = pdf.get_page_pixmap(i)
+                stream = image.tobytes(output="png")
+                # Convert image data to a base64-encoded string
+                image_data_base64 = base64.b64encode(stream).decode("utf-8")
+                images.append(image_data_base64)
+
+        return images
+        
 
 class Saved(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
