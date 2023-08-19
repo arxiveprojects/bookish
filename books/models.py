@@ -43,15 +43,11 @@ class Book(models.Model):
     genre = models.ForeignKey(Genre,on_delete=models.PROTECT,related_name='book')
     pages = models.IntegerField(null=True, blank=True)
     cover = models.ImageField(upload_to='book/covers', null=True, blank=True)
-    pdf = models.FileField(upload_to="book/pdfs", validators=[
-                           validate_pdf_size, FileExtensionValidator(allowed_extensions=['pdf'])])
+    pdf = models.FileField(upload_to="book/pdfs", validators=[ validate_pdf_size, FileExtensionValidator(allowed_extensions=['pdf'])])
     posted_at = models.DateTimeField(auto_now_add=True)
     public = models.BooleanField(default=True)
-    user = models.ForeignKey(
-        get_user_model(), on_delete=models.PROTECT, related_name='book')
-    users_like = models.ManyToManyField(get_user_model(),
-                                        related_name='books_liked',
-                                        blank=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name='book')
+    users_like = models.ManyToManyField(get_user_model(),related_name='books_liked',blank=True)
 
     objects = models.Manager()
     publics = PublicsManager()
@@ -79,7 +75,9 @@ class Saved(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     at = models.DateTimeField(auto_now_add=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, related_name='favorite', null=True, blank=True, unique=True)
-
+    def __str__(self) -> str:
+        return f'created by {self.user} at {self.at}'
+    
 class SavedBook(models.Model):
     saved = models.ForeignKey(Saved, on_delete=models.CASCADE, related_name='saved_book')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='saved_book')

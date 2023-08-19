@@ -1,0 +1,5 @@
+{% for book in results %}
+<div {% if forloop.last %} hx-get="{% url 'more_books' %}?offset={{offset}}" hx-trigger="revealed" hx-swap="afterend" {% endif %}>
+    {% include 'post/_post.html' %}
+</div>
+{% endfor %}

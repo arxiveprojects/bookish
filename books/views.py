@@ -34,7 +34,7 @@ class BookListView(ListView):
     model = Book
     template_name = 'books/book_list.html'
     context_object_name = 'books'
-    paginate_by = 12
+    paginate_by = 3
 
     def get_queryset(self):
         genre_slug = self.kwargs.get("genre_slug")
@@ -50,6 +50,13 @@ class BookListView(ListView):
         context['genres'] = Genre.objects.all()
 
         return context
+def more_books(request):
+    offset = int(request.GET.get("offset"))
+    books = Book.publics.order_by('-posted_at')[offset:offset+3]
+    context = {'results': books, 'offset': offset+3}
+    return render(request, 'partial/more_books.html', context)
+
+
 class BookDetailView(DetailView):
     model= Book
     template_name='books/book_detail.html'
@@ -73,9 +80,9 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         form.instance.title = str(form.instance.title).title()
         
         try:
-            vectorstore = create_vectorstore(BOOK)
-            form.instance.summary = ask_pdf("summarize each chapter of the book. if you don't know then write None. Summary:",vectorstore)["answer"]
-            form.instance.author = ask_pdf("what is the author name of this document? if you don't know the name then just write None. Name:",vectorstore)["answer"]
+            # vectorstore = create_vectorstore(BOOK)
+            # form.instance.summary = ask_pdf("summarize each chapter of the book. if you don't know then write None. Summary:",vectorstore)["answer"]
+            # form.instance.author = ask_pdf("what is the author name of this document? if you don't know the name then just write None. Name:",vectorstore)["answer"]
             form.instance.pages = pages(pdf)
             form.instance.cover.save(f'{form.instance.title}.png',ContentFile(cover(pdf)))
         except Exception as e:
