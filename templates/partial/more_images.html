@@ -1,5 +1,5 @@
 {% for img in images %}
-    <div class="mx-1 col-12 col-md-6 col-lg-4" {% if forloop.last %} hx-get="{% url 'get_book_images' book.id %}?offset={{offset}}" hx-trigger="intersect once" hx-swap="afterend" {% endif %}>
+    <div class="mx-1 col-9 col-lg-5" {% if forloop.last %} hx-get="{% url 'get_book_images' book.id %}?offset={{offset}}" hx-trigger="intersect once" hx-swap="afterend" {% endif %}>
         <img class="h-100 w-100 img-fluid" src="data:image/png;base64,{{ img }}" alt="{{book.title}}" />
     </div>
 {% endfor %}

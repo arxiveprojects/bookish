@@ -3,27 +3,42 @@
  {% block title %} {{user.username}} {%endblock title %}
  {% block content %}
     <div class=" my-4 mx-2 d-flex justify-content-start">        
-        {% if request.user.image %}
-        <img src="{{request.user.image.url}}" alt="mdo" width="75" height="75" class="rounded-circle">
+        {% if user.image %}
+          <img src="{{user.image.url}}" alt="mdo" width="75" height="75" class="rounded-circle">
         {% else %}
-        <img src="{% static  'img/user.png' %}" alt="mdo" width="75" height="75" class="rounded-circle">
+          <img src="{% static  'img/user.png' %}" alt="mdo" width="75" height="75" class="rounded-circle">
         {% endif %}
-        <div class="mx-3 mt-3">
-          <div class="d-flex">
-            <h3 class="me-3" >{{user.username}}</h3>
-            {% if user.id == request.user.id %}
-              <a class="text-decoration-none" href="{% url 'edit_profile' user.id %}" > Edit</a>
-            {% endif %}
-          </div>
-          <p>{% if user.bio %} {{user.bio}} <br> {% endif %} </p>
-      </div>
-      
+          
+        <div class="row text-center lh-1 mx-3 mt-1">
+
+          <div class="col-4"><span class="fw-bold h5">{{user.book.all|length}}</span> <div class="text-muted fw-lighter small" style="font-size: .75em;">Books</div>  </div>
+          <div class="col-4"><span class="fw-bold h5">{{user.followers.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Followers</div>  </div>
+          <div class="col-4"><span class="fw-bold h5">{{user.following.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Following</div>  </div>
+          <div class="col  mt-2">
+              {% if user.id == request.user.id %}
+                <a class="btn btn-sm btn-primary fw-bold" href="{% url 'edit_profile' user.id %}" > Edit</a>
+              {% else %}
+                {% if user in request.user.following.all %}
+                  <a hx-post="{% url 'follow' user.id %}" class="btn btn-sm btn-primary fw-bold"><i class="bi bi-check-lg"></i> Following</a>
+                {% else %}
+                  <a hx-post="{% url 'follow' user.id %}" class="btn btn-sm btn-primary fw-bold"><i class="bi bi-plus"></i> Follow </a>
+                {% endif %}
+              {% endif %}
+            </div>
+        </div>
+        
     </div>
-    <hr/>
-     
+    <div class="mx-2">
+      <h3 class="me-3" >{{user.username}}</h3>
+      <p>{% if user.bio %} {{user.bio}} <br> {% endif %} </p>
+    </div>
+
+
+<hr/>     
 {% if user.id == request.user.id %}
-      <div class="text-center my-4"><a class="btn btn-outline-secondary btn-sm" href="{% url 'add_book' %}"> Add Book</a></div>
+<div class="text-center my-4"><a class="btn btn-outline-secondary btn-sm" href="{% url 'add_book' %}"> Add Book</a></div>
 {% endif %}
+<br/>     
 
  {% if not books %}
   <div class="d-flex justify-content-center">

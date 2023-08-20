@@ -1,4 +1,3 @@
-import io
 from django.db import models
 from django.db.models.query import QuerySet
 from django.urls import reverse
@@ -6,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.core.validators import FileExtensionValidator
 from django.utils.text import slugify
 from books.validators import validate_pdf_size
-from pdf2image import convert_from_path
 import uuid
 import fitz
 import base64

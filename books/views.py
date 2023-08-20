@@ -142,7 +142,7 @@ def more_books(request):
     return render(request, 'partial/more_books.html', context)
 
 def get_book_images(request,pk):
-    offset = int(request.GET.get("offset",0))
+    offset = int(request.GET.get("offset","0"))
     book:Book = Book.objects.get(pk=pk)
     images = book.get_images(offset)
     context ={"images":images,"book":book,"offset":offset+6}

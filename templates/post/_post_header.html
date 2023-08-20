@@ -10,7 +10,7 @@
       {% endif %}
       <div class="px-2 lh-1">
         <a class=" h6 text-muted" style="text-decoration:none" href=" {% url 'profile' book.user.id %}">{{book.user.username}}</a>
-        <p class="text-muted  small fw-lighter" style="font-size: .75em;">  {{book.posted_at|date:"d/b/Y"}} </p> 
+        <p class="text-muted  fw-lighter" style="font-size: .75em;">  {{book.posted_at|date:"d/b/Y"}} </p> 
       </div>
     </div>
     
@@ -35,6 +35,7 @@
     </div>
     
     {% endif %}
+
   </div>
     <h6 class="card-text text-truncate">
       <a  href="{{book.pdf.url}}" download class="text-decoration-none bi bi-download"> </a>
