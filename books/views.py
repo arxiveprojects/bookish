@@ -1,28 +1,17 @@
-from typing import Any, Dict
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DeleteView, UpdateView, CreateView,DetailView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.postgres.search import TrigramSimilarity
-from django.core.files.base import ContentFile
 from django.urls import reverse_lazy
-from django.views.decorators.http import require_POST
-from .models import Book, Genre, Saved, SavedBook
+from .models import Book
 from .forms import BookCreationForm, BookUpdateForm
 from .ask_pdf import ask_pdf,create_vectorstore
 from django.contrib.auth import get_user_model
 import fitz
 
 User = get_user_model()
-
-def cover(pdf):
-    with fitz.Document(stream = pdf, filetype='pdf') as pdf:
-        image = pdf.get_page_pixmap(0)
-        stream = image.tobytes(output="png")
-        return stream
-
     
 def pages(pdf):
     try:
@@ -39,19 +28,8 @@ class BookListView(ListView):
     paginate_by = 3
 
     def get_queryset(self):
-        genre_slug = self.kwargs.get("genre_slug")
-        if genre_slug:
-            return Book.publics.filter(genre__slug=genre_slug).order_by('-posted_at').select_related('user')
-        return Book.publics.order_by('-posted_at').select_related('user')
+       return Book.publics.order_by('-posted_at').select_related('user')
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        genre_slug = self.kwargs.get("genre_slug")
-        if genre_slug:
-            context["genre"] = get_object_or_404(Genre, slug=genre_slug)
-        context['genres'] = Genre.objects.all()
-
-        return context
 
 class BookDetailView(DetailView):
     model= Book
@@ -76,11 +54,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         form.instance.title = str(form.instance.title).title()
         
         try:
-            # vectorstore = create_vectorstore(BOOK)
-            # form.instance.summary = ask_pdf("summarize each chapter of the book. if you don't know then write None. Summary:",vectorstore)["answer"]
-            # form.instance.author = ask_pdf("what is the author name of this document? if you don't know the name then just write None. Name:",vectorstore)["answer"]
             form.instance.pages = pages(pdf)
-            form.instance.cover.save(f'{form.instance.title}.png',ContentFile(cover(pdf)))
         except Exception as e:
             return super().form_invalid(form)
         return super().form_valid(form)
@@ -147,7 +121,7 @@ def get_book_images(request,pk):
     offset = int(request.GET.get("offset","0"))
     book:Book = Book.objects.get(pk=pk)
     images = book.get_images(offset)
-    context ={"images":images,"book":book,"offset":offset+6}
+    context ={"images":images,"book":book,"offset":offset+4}
     return render(request, 'partial/more_images.html', context)
 
 def profile(request,user_pk=None):
@@ -157,23 +131,7 @@ def profile(request,user_pk=None):
     else:
         user = get_object_or_404(User, pk=user_pk)
         books = user.book.filter(public = True)
-    return render(request,"profile/profile.html",{"user":user,"books":books})
-
-@login_required
-def saved_book_list(request):
-    saved_books = Saved.objects.get(user=request.user)
-    books = [ saved_book.book for saved_book in saved_books.saved_book.all()]
-    return render(request, 'books/saved.html', {'books': books})
-
-@login_required
-def save_book(request, pk):
-    saved = Saved.objects.get(user=request.user)
-    try:
-        fav_book = SavedBook.objects.get(saved=saved, book_id=pk)
-        fav_book.delete()
-    except SavedBook.DoesNotExist:
-        SavedBook.objects.create(saved=saved, book_id=pk)
-    return redirect("saved_books")
+    return render(request,"profile/profile.html",{"profile_user":user,"books":books})
 
 
 @login_required

@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 
-from accounts.models import Contact
+from accounts.models import Network
 from .forms import CustomUserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -33,12 +33,11 @@ class ProfileUpdateView(LoginRequiredMixin,UserPassesTestMixin, generic.UpdateVi
 @require_POST
 def follow(request, pk):
     user = get_object_or_404(User,pk=pk)
-    following = False
+    print(request.user.following.all())
     try:
-        contact = Contact.objects.get(user_to=user,user_from=request.user)
-        contact.delete()
-    except Contact.DoesNotExist:
+        following = False
+        Network.objects.get(user_to=user,user_from=request.user).delete()
+    except Network.DoesNotExist:
         following = True
-        Contact.objects.create(user_to=user,user_from=request.user)
-    print("count",user.followers.all().count())
+        Network.objects.create(user_to=user,user_from=request.user)
     return render(request,"partial/follow.html",{"following":following})

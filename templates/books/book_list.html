@@ -1,39 +1,19 @@
 {% extends '_base.html' %}
 
-
 {% block content %}
 
-
-{% if not books %}
-<div class="d-flex justify-content-center">
-  <h4>There is no book</h4>
- </div>
-{% else %}
-
-  <select class="my-4 form-select form-select-sm" id="collectionDropdown">
-    <option {% if not genre %} selected {% endif %} value="{% url 'book_list'  %}">Select Gnere</option>
-    {% for g in genres %}
-    <option {% if genre.slug == g.slug %} selected {% endif %} 
-            value="{{ g.get_absolute_url }}">{{ g.name }}</option>
-    {% endfor %}
-  </select>
-
-  {% for book in books %}
-    <div {% if forloop.last %} hx-get="{% url 'more_books' %}?offset=3" hx-trigger="revealed" hx-swap="afterend" {% endif %}>
-      {% include 'post/_post.html' %}
+  {% if not books %}
+    <div class="d-flex justify-content-center">
+      <h4>There is no book</h4>
     </div>
-  {% endfor %}
+  {% else %}
+
+    {% for book in books %}
+      <div {% if forloop.last %} hx-get="{% url 'more_books' %}?offset=3" hx-trigger="revealed" hx-swap="afterend" {% endif %}>
+        {% include 'post/_post.html' %}
+      </div>
+    {% endfor %}
 
   {% endif %} 
 
-  <script>
-    const dropdown = document.getElementById("collectionDropdown");
-    
-    dropdown.addEventListener("change", function() {
-        const selectedValue = dropdown.options[dropdown.selectedIndex].value;
-
-        window.location.href = selectedValue;
-
-    });
-</script>
 {% endblock content %}

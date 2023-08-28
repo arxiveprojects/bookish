@@ -1,27 +1,27 @@
 {% extends '_base.html' %}
 {% load static %}
- {% block title %} {{user.username}} {%endblock title %}
+ {% block title %} {{profile_user.username}} {%endblock title %}
  {% block content %}
     <div class=" my-4 mx-2 d-flex justify-content-start">        
-        {% if user.image %}
-          <img src="{{user.image.url}}" alt="mdo" width="75" height="75" class="rounded-circle">
+        {% if profile_user.image %}
+          <img src="{{profile_user.image.url}}" alt="mdo" width="75" height="75" class="rounded-circle">
         {% else %}
           <img src="{% static  'img/user.png' %}" alt="mdo" width="75" height="75" class="rounded-circle">
         {% endif %}
           
         <div class="row text-center lh-1 mx-3 mt-1">
 
-          <div class="col-4"><span class="fw-bold h5">{{user.book.all|length}}</span> <div class="text-muted fw-lighter small" style="font-size: .75em;">Books</div>  </div>
-          <div class="col-4"><span class="fw-bold h5">{{user.followers.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Followers</div>  </div>
-          <div class="col-4"><span class="fw-bold h5">{{user.following.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Following</div>  </div>
+          <div class="col-4"><span class="fw-bold h5">{{profile_user.book.all|length}}</span> <div class="text-muted fw-lighter small" style="font-size: .75em;">Books</div>  </div>
+          <div class="col-4"><span class="fw-bold h5">{{profile_user.followers.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Followers</div>  </div>
+          <div class="col-4"><span class="fw-bold h5">{{profile_user.following.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Following</div>  </div>
           <div class="col ps-4  mt-2">
-              {% if user.id == request.user.id %}
-                <a class="btn w-100 btn-sm btn-primary fw-bold" href="{% url 'edit_profile' user.id %}" > Edit</a>
+              {% if profile_user.id == request.user.id %}
+                <a class="btn w-100 btn-sm btn-primary fw-bold" href="{% url 'edit_profile' profile_user.id %}" > Edit</a>
               {% else %}
-                {% if user in request.user.following.all %}
-                  <a hx-post="{% url 'follow' user.id %}" class="btn w-100 btn-sm btn-primary fw-bold"><i class="bi bi-check-lg"></i> Following</a>
+                {% if profile_user in request.user.following.all %}
+                  <a hx-post="{% url 'follow' profile_user.id %}" class="btn w-100 btn-sm btn-primary fw-bold"><i class="bi bi-check-lg"></i> Following</a>
                 {% else %}
-                  <a hx-post="{% url 'follow' user.id %}" class="btn w-100 btn-sm btn-primary fw-bold"><i class="bi bi-plus"></i> Follow </a>
+                  <a hx-post="{% url 'follow' profile_user.id %}" class="btn w-100 btn-sm btn-primary fw-bold"><i class="bi bi-plus"></i> Follow </a>
                 {% endif %}
               {% endif %}
             </div>
@@ -29,13 +29,13 @@
         
     </div>
     <div class="mx-2">
-      <h3 class="me-3" >{{user.username}}</h3>
-      <p>{% if user.bio %} {{user.bio}} <br> {% endif %} </p>
+      <h3 class="me-3" >{{profile_user.username}}</h3>
+      <p>{% if profile_user.bio %} {{profile_user.bio}} <br> {% endif %} </p>
     </div>
 
 
 <hr/>     
-{% if user.id == request.user.id %}
+{% if profile_user.id == request.user.id %}
 <div class="text-center my-4"><a class="btn btn-outline-secondary btn-sm" href="{% url 'add_book' %}"> Add Book</a></div>
 {% endif %}
 <br/>     

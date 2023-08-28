@@ -3,16 +3,17 @@ from .models import Book
 
 
 class BookUpdateForm(forms.ModelForm):
-    author= forms.CharField(required=False)
     title= forms.CharField(required=False)
-    summary = forms.CharField(widget=forms.Textarea(attrs={"rows":3 }),required=False)
+    description=forms.CharField(widget=forms.Textarea(attrs={"rows":2 }),required=False)
+
     class Meta:
         model=Book
-        fields=['title','author','genre','public','summary','cover']
+        fields=['title','public','description']
 
 class BookCreationForm(forms.ModelForm):
     title= forms.CharField(required=False)
+    description=forms.CharField(widget=forms.Textarea(attrs={"rows":2 }),required=False)
     class Meta:
         model=Book
-        fields=['title','genre', 'public','pdf']
+        fields=['title', 'public', 'description', 'pdf']
 

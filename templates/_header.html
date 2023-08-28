@@ -8,12 +8,7 @@
     
 
       <div class="d-flex align-items-center">
-        <a href="{% url 'saved_books' %}" type="button" class="btn btn-sm btn-outline-secondary position-relative mx-3">
-            Saved
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {{ saved_books|length }}
-            </span>
-        </a>
+     
 
         <form action="{% url 'book_search' %}" method="get" class="w-100 me-3" role="search">
           <input  name="q" class="form-control" placeholder="Search..." aria-label="Search">
