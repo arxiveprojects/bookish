@@ -29,17 +29,28 @@
             <small class="ms-1 text-muted"> </small>
         </div>
         <div>
-            <i class="bi bi-send"></i>
-            <samll class="ms-1 text-muted"> </samll>
+            <input type="url" hidden id="book-{{book.id}}-url" value="{{book.get_absolute_url}}">
+            <i onclick="shareLink('{{book.id}}')" class="bi bi-share"></i>
         </div>
-
-        {% if user.is_authenticated and not request.user == book.user %}
-            {% if book.saved_book.saved in user.favorite %}
-            <a class="text-decoration-none" href="{% url 'save_book' book.id %}"> <i class="bi bi-bookmark-plus-fill"></i> </a>
-            {% else %}
-            <a class="text-decoration-none" href="{% url 'save_book' book.id %}"> <i class="bi bi-bookmark-plus"></i> </a>
-            {% endif %}
-        {% endif %}
 
     </div>
 </div>
+
+<script>
+    function shareLink(book_id){
+        var url = document.getElementById(`book-${book_id}-url`).value;
+        url = document.location.href +url 
+        if (url) {
+            navigator.clipboard.writeText(url)
+                .then(function () {
+                    alert("URL copied");
+                })
+                .catch(function (error) {
+                    alert("Failed to copied" + error);
+                });
+        }
+    }
+</script>
+
+
+    

@@ -33,7 +33,12 @@
           </a> 
       </ul>
     </div>
-    
+    {% else %}
+      {% if book.saved_book.saved in user.favorite %}
+        <a class="text-decoration-none" href="{% url 'save_book' book.id %}"> <i class="bi bi-bookmark-plus-fill"></i> </a>
+      {% else %}
+        <a class="text-decoration-none" href="{% url 'save_book' book.id %}"> <i class="bi bi-bookmark-plus"></i> </a>
+      {% endif %}
     {% endif %}
 
   </div>

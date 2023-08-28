@@ -14,14 +14,14 @@
           <div class="col-4"><span class="fw-bold h5">{{user.book.all|length}}</span> <div class="text-muted fw-lighter small" style="font-size: .75em;">Books</div>  </div>
           <div class="col-4"><span class="fw-bold h5">{{user.followers.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Followers</div>  </div>
           <div class="col-4"><span class="fw-bold h5">{{user.following.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Following</div>  </div>
-          <div class="col  mt-2">
+          <div class="col ps-4  mt-2">
               {% if user.id == request.user.id %}
-                <a class="btn btn-sm btn-primary fw-bold" href="{% url 'edit_profile' user.id %}" > Edit</a>
+                <a class="btn w-100 btn-sm btn-primary fw-bold" href="{% url 'edit_profile' user.id %}" > Edit</a>
               {% else %}
                 {% if user in request.user.following.all %}
-                  <a hx-post="{% url 'follow' user.id %}" class="btn btn-sm btn-primary fw-bold"><i class="bi bi-check-lg"></i> Following</a>
+                  <a hx-post="{% url 'follow' user.id %}" class="btn w-100 btn-sm btn-primary fw-bold"><i class="bi bi-check-lg"></i> Following</a>
                 {% else %}
-                  <a hx-post="{% url 'follow' user.id %}" class="btn btn-sm btn-primary fw-bold"><i class="bi bi-plus"></i> Follow </a>
+                  <a hx-post="{% url 'follow' user.id %}" class="btn w-100 btn-sm btn-primary fw-bold"><i class="bi bi-plus"></i> Follow </a>
                 {% endif %}
               {% endif %}
             </div>

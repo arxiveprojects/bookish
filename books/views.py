@@ -5,6 +5,7 @@ from django.views.generic import ListView, DeleteView, UpdateView, CreateView,De
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.postgres.search import TrigramSimilarity
 from django.core.files.base import ContentFile
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
@@ -118,7 +119,8 @@ class SearchResultsListView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         query = query.strip()
-        return Book.publics.filter(title__icontains=query).order_by('-posted_at').select_related('user')
+        return Book.publics.annotate(similarity=TrigramSimilarity('title', query),).filter(similarity__gt=0.1).order_by('-similarity')
+
       
 
 def ask_question(request,pk):

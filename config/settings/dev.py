@@ -12,6 +12,17 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+ 'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'book',
+    'USER': 'postgres',
+    'PASSWORD': 'ik98',
+    'PORT': 5432
+ }
+}
+
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
