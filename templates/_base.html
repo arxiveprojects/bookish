@@ -14,14 +14,13 @@
   </head>
   <body  data-bs-theme="light">
 
-    {% include "_header.html" %}
-    <div class="row justify-content-center ">
-      <div class="col-lg-6  ">
+    <div class='container pb-5'>
+        {% include "_header.html" %}
       
-          {% block content %} 
-          {% endblock content %}
-      </div>
+        {% block content %} 
+        {% endblock content %}
     </div>
+
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script>
       document.body.addEventListener('htmx:configRequest', (event) => {
