@@ -1,4 +1,5 @@
 {% extends '_base.html' %}
+{% load humanize %} 
 {% load static %}
  {% block title %} {{profile_user.username}} {%endblock title %}
  {% block content %}
@@ -11,14 +12,14 @@
           
         <div class="row text-center lh-1 mx-3 mt-1">
 
-          <div class="col-4"><span class="fw-bold h5">{{profile_user.book.all|length}}</span> <div class="text-muted fw-lighter small" style="font-size: .75em;">Books</div>  </div>
-          <div class="col-4"><span class="fw-bold h5">{{profile_user.followers.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Followers</div>  </div>
-          <div class="col-4"><span class="fw-bold h5">{{profile_user.following.all|length}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Following</div>  </div>
+          <div class="col-4"><span class="fw-bold h5">{{profile_user.book.all|length|intword|intcomma}}</span> <div class="text-muted fw-lighter small" style="font-size: .75em;">Books</div>  </div>
+          <div class="col-4"><span class="fw-bold h5">{{profile_user.followers.all|length|intword|intcomma}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Followers</div>  </div>
+          <div class="col-4"><span class="fw-bold h5">{{profile_user.following.all|length|intword|intcomma}}</span>  <div class="text-muted fw-lighter small" style="font-size: .75em;">Following</div>  </div>
           <div class="col ps-4  mt-2">
               {% if profile_user.id == request.user.id %}
                 <a class="btn w-100 btn-sm btn-primary fw-bold" href="{% url 'edit_profile' profile_user.id %}" > Edit</a>
-              {% else %}
-                {% if profile_user in request.user.following.all %}
+              {% elif request.user.is_authenticated  %}
+                {% if  profile_user in request.user.following.all  %}
                   <a hx-post="{% url 'follow' profile_user.id %}" class="btn w-100 btn-sm btn-primary fw-bold"><i class="bi bi-check-lg"></i> Following</a>
                 {% else %}
                   <a hx-post="{% url 'follow' profile_user.id %}" class="btn w-100 btn-sm btn-primary fw-bold"><i class="bi bi-plus"></i> Follow </a>

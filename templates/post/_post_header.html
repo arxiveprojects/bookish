@@ -1,3 +1,4 @@
+{% load humanize %} 
 {% load static %} 
 
 <div class="card-header text-bg-light border-light ">
@@ -10,7 +11,7 @@
       {% endif %}
       <div class="px-2 lh-1">
         <a class=" h6 text-muted" style="text-decoration:none" href=" {% url 'profile' book.user.id %}">{{book.user.username}}</a>
-        <p class="text-muted  fw-lighter" style="font-size: .75em;">  {{book.posted_at|date:"d/b/Y"}} </p> 
+        <p class="text-muted  fw-lighter" style="font-size: .75em;">  {{book.posted_at|naturaltime}} </p> 
       </div>
     </div>
     

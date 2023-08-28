@@ -1,3 +1,4 @@
+{% load humanize %} 
 
 <div class="card-footer text-bg-transparent border-light">
     <div class="d-flex justify-content-around">
@@ -10,7 +11,7 @@
                     {% else %}
                         <i class="bi bi-hand-thumbs-up-fill"></i>
                     {% endif %}
-                    <span>{{total_likes}}</span>
+                    <span>{{total_likes|intword|intcomma}}</span>
                 </a>
             {% else %}
                 {% if request.user not in users_like %}
