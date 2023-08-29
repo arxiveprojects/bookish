@@ -3,8 +3,6 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
@@ -35,10 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     
-    'crispy_forms',
-    'crispy_bootstrap5',
     "debug_toolbar",
-    "storages",
     "django_htmx",
   
     'accounts',

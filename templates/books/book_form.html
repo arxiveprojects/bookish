@@ -1,21 +1,16 @@
 {% extends "_base.html" %}
-{% load crispy_forms_tags %}
 {% block content %}
 
     <div class="d-flex justify-content-center">
-        <div class="card mb-3 p-2 w-100">
+        <div class="card text-bg-light border-light  mb-3 p-2 w-100">
             <div class="card-header bg-transparent "><h5> Add New Post </h5></div>  
             
                 <form action="" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="card-body">
-                        <fieldset class="form-group">
-                            {{ form|crispy }}
-                        </fieldset>
+                        {{ form.as_p }}
+                        <button class="btn btn-success" type="submit"><i class="fas fa-upload"></i> Submit</button>
                     </div>
-                        <div class="card-body form-group">
-                            <button class="btn btn-success" type="submit"><i class="fas fa-upload"></i> Submit</button>
-                        </div>
                 </form>
             </div>
         </div>

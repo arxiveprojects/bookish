@@ -7,7 +7,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.urls import reverse_lazy
 from .models import Book
 from .forms import BookCreationForm, BookUpdateForm
-from .ask_pdf import ask_pdf,create_vectorstore
+# from .ask_pdf import ask_pdf,create_vectorstore
 from django.contrib.auth import get_user_model
 import fitz
 
@@ -99,12 +99,12 @@ class SearchResultsListView(ListView):
 
       
 
-def ask_question(request,pk):
-    question = request.POST.get('question')
-    book = Book.objects.get(id=pk)
-    vectorstore = create_vectorstore(book.pdf.path)
-    answer =ask_pdf(question,vectorstore)["answer"]
-    return render(request,"partial/answer.html",{"answer":answer})
+# def ask_question(request,pk):
+#     question = request.POST.get('question')
+#     book = Book.objects.get(id=pk)
+#     vectorstore = create_vectorstore(book.pdf.path)
+#     answer =ask_pdf(question,vectorstore)["answer"]
+#     return render(request,"partial/answer.html",{"answer":answer})
  
 def update_visibility(request,pk):
     book = Book.objects.get(id=pk)

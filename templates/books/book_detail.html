@@ -6,24 +6,23 @@
 
     {% include 'post/_post.html' %}      
   
-
-    <div class="card text-bg-light border-light p-4 my-4">
+{% comment %} 
+    <div class="card text-bg-light border-light p-4 mb-4">
 
         <label class="mb-2" for="question"><strong>Ask a question from "{{book.title}}"(Powered by openai):</strong> </label>
-        <form hx-post="{% url 'ask_question' book.id %}" hx-target="#answer" method="post">
+        <form hx-post="#" hx-target="#answer" method="post">
             {% csrf_token %}
             <div class="form-group">
-                {% if question %}
                 <input class="form-control" id="question" value="{{question}}" name="question" required>
-                {% else %}
-                <input class="form-control" id="question" value="{{question}}" name="question" required>
-                {%endif%}
             </div>
             <button type="submit" class="btn mt-2 mb-4 btn-sm btn-primary">Submit</button>
+            <div class="text-center">
+                <div class="spinner-border htmx-indicator" role="status"></div>
+            </div>
         </form>
 
         <div id="answer"></div>  
-    </div>
+    </div> {% endcomment %}
 </div>
 
 {% endblock %}
