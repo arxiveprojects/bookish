@@ -11,6 +11,9 @@
     {% for book in books %}
       <div {% if forloop.last %} hx-get="{% url 'more_books' %}?offset=3" hx-trigger="revealed" hx-swap="afterend" {% endif %}>
         {% include 'post/_post.html' %}
+        <div class="text-center">
+          <div class="spinner-border htmx-indicator" role="status"></div>
+        </div>
       </div>
     {% endfor %}
 

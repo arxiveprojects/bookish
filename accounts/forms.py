@@ -11,7 +11,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CustomUserChangeForm(UserChangeForm):
     bio=forms.CharField(widget=forms.Textarea(attrs={"rows":2 }),required=False)
+    password = None
     class Meta:
         model= get_user_model()
         fields= ('email', 'username', 'image', 'bio',)
-        exclude = ('password',)

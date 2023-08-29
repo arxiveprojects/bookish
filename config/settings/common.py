@@ -1,10 +1,6 @@
 from pathlib import Path
 import os
 
-import socket
-hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

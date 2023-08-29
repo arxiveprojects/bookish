@@ -5,7 +5,7 @@
         {% with total_likes=book.users_like.count users_like=book.users_like.all %}    
         <div>
             {% if request.user.is_authenticated %}
-                <a style="cursor: pointer;"  id="book-like-{{book.id}}" class="text-decoration-none" hx-traget="#book-like-{{book.id}}" hx-post="{% url 'like' book.id %}">
+                <a style="cursor: pointer;"  id="book-like-{{book.id}}" class="text-decoration-none" hx-swap="innerHTML" hx-traget="#book-like-{{book.id}}" hx-post="{% url 'like' book.id %}">
                     {% if request.user not in users_like %}
                         <i class="bi bi-hand-thumbs-up"></i>
                     {% else %}

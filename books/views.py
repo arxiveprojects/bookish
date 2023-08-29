@@ -28,7 +28,7 @@ class BookListView(ListView):
     paginate_by = 3
 
     def get_queryset(self):
-       return Book.publics.order_by('-posted_at').select_related('user')
+       return Book.publics.order_by('-posted_at').select_related('user').prefetch_related("users_like")
 
 
 class BookDetailView(DetailView):
@@ -36,6 +36,8 @@ class BookDetailView(DetailView):
     template_name='books/book_detail.html'
     context_object_name= 'book'
 
+    def get_queryset(self):
+       return Book.objects.all().select_related('user')
 
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
@@ -113,7 +115,7 @@ def update_visibility(request,pk):
 
 def more_books(request):
     offset = int(request.GET.get("offset"))
-    books = Book.publics.order_by('-posted_at')[offset:offset+3]
+    books = Book.publics.order_by('-posted_at').prefetch_related("users_like")[offset:offset+3]
     context = {'results': books, 'offset': offset+3}
     return render(request, 'partial/more_books.html', context)
 
@@ -127,10 +129,10 @@ def get_book_images(request,pk):
 def profile(request,user_pk=None):
     if not user_pk:
         user = request.user
-        books = user.book.all()
+        books = user.book.all().select_related("users_like")
     else:
         user = get_object_or_404(User, pk=user_pk)
-        books = user.book.filter(public = True)
+        books = user.book.filter(public = True).prefetch_related("users_like")
     return render(request,"profile/profile.html",{"profile_user":user,"books":books})
 
 

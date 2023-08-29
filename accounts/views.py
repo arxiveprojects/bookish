@@ -4,7 +4,7 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 
 from accounts.models import Network
-from .forms import CustomUserCreationForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -18,8 +18,9 @@ class SignupPageView(generic.CreateView):
 
 class ProfileUpdateView(LoginRequiredMixin,UserPassesTestMixin, generic.UpdateView):
     model= User
-    fields= ('email', 'username', 'image', 'bio',)
+    # fields= ('email', 'username', 'image', 'bio',)
     success_url= reverse_lazy('profile')
+    form_class = CustomUserChangeForm
     template_name= 'registration/edit_profile.html'
 
 
@@ -33,7 +34,6 @@ class ProfileUpdateView(LoginRequiredMixin,UserPassesTestMixin, generic.UpdateVi
 @require_POST
 def follow(request, pk):
     user = get_object_or_404(User,pk=pk)
-    print(request.user.following.all())
     try:
         following = False
         Network.objects.get(user_to=user,user_from=request.user).delete()

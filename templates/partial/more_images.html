@@ -1,5 +1,6 @@
 {% for img in images %}
     <div class="mx-1 col-8 col-lg-4" {% if forloop.last %} hx-get="{% url 'get_book_images' book.id %}?offset={{offset|default:4}}" hx-trigger="intersect once" hx-swap="afterend" {% endif %}>
         <img class="h-100 rounded w-100 img-fluid" src="data:image/png;base64,{{ img }}" alt="{{book.title}}" />
+        <span class="spinner-border htmx-indicator" role="status"></span>
     </div>
 {% endfor %}
