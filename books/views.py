@@ -129,7 +129,7 @@ def get_book_images(request,pk):
 def profile(request,user_pk=None):
     if not user_pk:
         user = request.user
-        books = user.book.all().select_related("users_like")
+        books = user.book.all().prefetch_related("users_like")
     else:
         user = get_object_or_404(User, pk=user_pk)
         books = user.book.filter(public = True).prefetch_related("users_like")
