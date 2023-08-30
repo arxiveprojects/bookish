@@ -87,41 +87,38 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
 
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'general.log'
-        },
+#         },
+#         'file': {
+#             'class': 'logging.FileHandler',
+#             'filename': 'general.log'
+#         },
 
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console', 'file'],
-            'level': os.environ.get('DJANGO_LOG_LEVEL', 'INFO')
-        },
-        'formatters': {
-            'verbose': {
-                'formate': '{asctime} ({levelname}) - {name} -{message}',
-                'style': '{'
-            }
-        }
-    },
+#     },
+#     'loggers': {
+#         '': {
+#             'handlers': ['console', 'file'],
+#             'level': os.environ.get('DJANGO_LOG_LEVEL', 'INFO')
+#         },
+#         'formatters': {
+#             'verbose': {
+#                 'formate': '{asctime} ({levelname}) - {name} -{message}',
+#                 'style': '{'
+#             }
+#         }
+#     },
 
-}
+# }

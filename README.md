@@ -1,10 +1,12 @@
 ## Getting Started
 # Home
-![Default Home View](./screenshot/list.png?raw=true "Title")
+![Default Home View](./screenshot/list.png?raw=true "Home ss")
+# User Profile
+![Default Home View](./screenshot/profile.png?raw=true "User Profile ss")
 # Detail
-![Default Home View](./screenshot/detail.png?raw=true "Title")
+![Default Home View](./screenshot/detail.png?raw=true "Detail ss")
 # Book Create Form
-![Default Home View](./screenshot/add.png?raw=true "Title")
+![Default Home View](./screenshot/add.png?raw=true "Book Create Form ss")
 
 
 Setup project environment with python -m venv myenv.
