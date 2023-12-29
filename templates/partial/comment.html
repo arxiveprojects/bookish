@@ -1,0 +1,28 @@
+{% load humanize %}
+
+<div id="comment-{{comment.id}}" class="mb-3">
+  <div class="d-flex justify-content-between lh-1">
+    <div class="d-flex">
+      <a
+        class="h6 text-primary me-4"
+        style="text-decoration: none"
+        href=" {% url 'profile' comment.author.id %}"
+        >{{comment.author}}</a
+      >
+      <p class="text-muted fw-lighter" style="font-size: 0.75em">
+        {{comment.created_at|naturaltime}}
+      </p>
+    </div>
+    {% if comment.author == user %}
+    <i
+      class="bi bi-trash"
+      hx-delete="{% url 'delete_comment' comment.id %}"
+      hx-trigger="click"
+      hx-target="#comment-{{comment.id}}"
+      hx-swap="delete"
+    ></i>
+    {% endif %}
+  </div>
+  <p class="text-wrap fw-light">{{comment.content}}</p>
+  <hr />
+</div>

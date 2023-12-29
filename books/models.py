@@ -26,8 +26,10 @@ class Book(models.Model):
     pdf = models.FileField(upload_to="book/pdfs", validators=[ validate_pdf_size, FileExtensionValidator(allowed_extensions=['pdf'])])
     posted_at = models.DateTimeField(auto_now_add=True)
     public = models.BooleanField(default=True)
+  
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='book')
     users_like = models.ManyToManyField(settings.AUTH_USER_MODEL,related_name='books_liked',blank=True)
+  
     objects = models.Manager()
     publics = PublicsManager()
 
@@ -64,3 +66,9 @@ class Book(models.Model):
 
         return images
         
+        
+class Comment(models.Model):
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) 
+    book = models.ForeignKey(Book, on_delete=models.CASCADE) 

@@ -2,10 +2,12 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DeleteView, UpdateView, CreateView,DetailView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.postgres.search import TrigramSimilarity
 from django.urls import reverse_lazy
-from .models import Book
+from .models import Book,Comment
 from .forms import BookCreationForm, BookUpdateForm
 # from .ask_pdf import ask_pdf,create_vectorstore
 from django.contrib.auth import get_user_model
@@ -95,7 +97,7 @@ class SearchResultsListView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         query = query.strip()
-        return Book.publics.annotate(similarity=TrigramSimilarity('title', query),).filter(similarity__gt=0.1).order_by('-similarity')
+        return Book.publics.annotate(similarity=TrigramSimilarity('title', query)).filter(similarity__gt=0.1).order_by('-similarity')
 
       
 
@@ -138,7 +140,7 @@ def profile(request,user_pk=None):
 
 @login_required
 def book_like(request,pk):
-    book = Book.objects.get(pk=pk)  
+    book = Book.objects.get(pk=pk)
     users_like =  book.users_like
     if request.user in users_like.all():
         book.users_like.remove(request.user)
@@ -147,3 +149,28 @@ def book_like(request,pk):
     return render(request,"partial/like.html",{"book":book})
 
 
+
+@login_required
+def get_comments(request,pk):
+    comments = Comment.objects.filter(book_id=pk)
+    return render(request,"partial/comments.html",{'comments':comments})
+
+
+
+
+@login_required
+@require_POST
+def create_comment(request,pk):
+    if request.method == "POST":
+        content = request.POST.get('comment')
+        comment = Comment(content=content, author=request.user, book_id=pk)
+        comment.save()
+        return render(request,"partial/comment.html",{'comment':comment})
+
+
+
+@login_required
+def delete_comment(request,pk):
+        comment = get_object_or_404(Comment, pk=pk)
+        comment.delete()
+        return HttpResponse("Comment Deleted")

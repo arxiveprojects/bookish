@@ -86,3 +86,9 @@ input[type="file"] {
     }
 }
 
+
+.date-sm{
+    font-size: xx-small;
+    font-weight: 600;
+    color: #777;
+}

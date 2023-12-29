@@ -17,3 +17,4 @@ class BookCreationForm(forms.ModelForm):
         model=Book
         fields=['title', 'public', 'description', 'pdf']
 
+

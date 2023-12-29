@@ -5,24 +5,38 @@
 {% block content %}
 
     {% include 'post/_post.html' %}      
-  
-{% comment %} 
-    <div class="card text-bg-light border-light p-4 mb-4">
 
-        <label class="mb-2" for="question"><strong>Ask a question from "{{book.title}}"(Powered by openai):</strong> </label>
-        <form hx-post="#" hx-target="#answer" method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <input class="form-control" id="question" value="{{question}}" name="question" required>
-            </div>
-            <button type="submit" class="btn mt-2 mb-4 btn-sm btn-primary">Submit</button>
-            <div class="text-center">
-                <div class="spinner-border htmx-indicator" role="status"></div>
-            </div>
+    <div class="p-4">
+        <h2 class="text-center mb-4">Comments</h2>
+
+        <form style="padding: 0;" hx-post="{% url 'comment' book.id %}" hx-target="#comments" hx-swap="afterbegin" method="post">
+          {% csrf_token %}
+          <div class="d-flex w-md-75" >
+            
+            <input
+              class="form-control me-4"
+              id="comment"
+              name="comment"
+              placeholder="Comment..."
+              required
+            />
+            
+            <button type="submit" class="btn btn-sm btn-primary">
+                Post
+            </button>
+        </div>
+          <div class="text-center">
+            <div class="spinner-border htmx-indicator" role="status"></div>
+          </div>
         </form>
+      
+        <div id="comments" hx-get="{% url 'comments' book.id %}" hx-trigger="load" hx-swap="innerHTML">
+        </div>
+      
+       
+      </div>
+      
 
-        <div id="answer"></div>  
-    </div> {% endcomment %}
 </div>
 
 {% endblock %}
