@@ -151,7 +151,7 @@ def book_like(request,pk):
 
 
 def get_comments(request,pk):
-    comments = Comment.objects.filter(book_id=pk)
+    comments = Comment.objects.filter(book_id=pk).order_by('-created_at')[:10]
     return render(request,"partial/comments.html",{'comments':comments})
 
 

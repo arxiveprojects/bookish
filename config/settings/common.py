@@ -10,13 +10,7 @@ LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'book_list'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
-
-STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
-STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -35,6 +29,7 @@ INSTALLED_APPS = [
     
     "debug_toolbar",
     "django_htmx",
+    "storages",
   
     'accounts',
     'books',
@@ -44,6 +39,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
