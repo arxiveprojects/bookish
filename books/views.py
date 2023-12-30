@@ -150,7 +150,6 @@ def book_like(request,pk):
 
 
 
-@login_required
 def get_comments(request,pk):
     comments = Comment.objects.filter(book_id=pk)
     return render(request,"partial/comments.html",{'comments':comments})
