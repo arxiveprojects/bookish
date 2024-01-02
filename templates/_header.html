@@ -3,7 +3,7 @@
     <div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
      
         <a href="{% url 'book_list' %}" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
-            <img src="{% static 'img/favicon.png' %}" alt="mdo" width="32" height="32" class="rounded-circle">
+            <img src="{% static 'img/favicon.png' %}" alt="book logo" width="32" height="32" class="rounded-circle">
         </a>
     
 
@@ -21,9 +21,9 @@
           <div class="flex-shrink-0 dropdown">
             <a href="{% url 'profile' %}" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
               {% if request.user.image %}
-                  <img src="{{request.user.image.url}}" alt="mdo" width="32" height="32" class="rounded-circle">
+                  <img src="{{request.user.image.url}}" alt="user dp" width="32" height="32" class="rounded-circle">
               {% else %}
-                  <img src="{% static  'img/user.png' %}" alt="mdo" width="32" height="32" class="rounded-circle">
+                  <img src="{% static  'img/user.png' %}" alt="not available" width="32" height="32" class="rounded-circle">
               {% endif %}
             </a>
             <ul class="dropdown-menu text-small shadow">

@@ -5,9 +5,9 @@
   <div class="d-flex justify-content-between">
     <div class="d-flex">
       {% if book.user.image %}
-        <img src="{{book.user.image.url}}" alt="mdo" width="32" height="32" class="rounded-circle">
+        <img src="{{book.user.image.url}}" alt="user dp" width="32" height="32" class="rounded-circle">
       {% else %}
-        <img src="{% static  'img/user.png' %}" alt="mdo" width="32" height="32" class="rounded-circle">
+        <img src="{% static  'img/user.png' %}" alt="404 img" width="32" height="32" class="rounded-circle">
       {% endif %}
       <div class="px-2 lh-1">
         <a class=" h6 text-primary" style="text-decoration:none" href=" {% url 'profile' book.user.id %}">{{book.user.username}}</a>

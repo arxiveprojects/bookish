@@ -5,9 +5,9 @@
  {% block content %}
     <div class=" my-4 mx-2 d-flex justify-content-start">        
         {% if profile_user.image %}
-          <img src="{{profile_user.image.url}}" alt="mdo" width="75" height="75" class="rounded-circle">
+          <img src="{{profile_user.image.url}}" alt="user dp" width="75" height="75" class="rounded-circle">
         {% else %}
-          <img src="{% static  'img/user.png' %}" alt="mdo" width="75" height="75" class="rounded-circle">
+          <img src="{% static  'img/user.png' %}" alt="404 img" width="75" height="75" class="rounded-circle">
         {% endif %}
           
         <div class="row text-center lh-1 mx-3 mt-1">
