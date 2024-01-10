@@ -1,8 +1,10 @@
 ## Getting Started
 # Home
 ![Default Home View](./screenshot/list.png?raw=true "Home ss")
+# Profile
+![Default Home View](./screenshot/profile.png?raw=true "Profile ss")
 # User Profile
-![Default Home View](./screenshot/profile.png?raw=true "User Profile ss")
+![Default Home View](./screenshot/user-profile.png?raw=true "User Profile ss")
 # Detail
 ![Default Home View](./screenshot/detail.png?raw=true "Detail ss")
 # Book Create Form
