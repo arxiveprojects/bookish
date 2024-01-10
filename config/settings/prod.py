@@ -1,10 +1,20 @@
 from .common import *
-import dj_database_url
 
 
 DEBUG = False
-SECRET_KEY = os.environ['SECRET_KEY']
-ALLOWED_HOSTS = [os.environ['ALLOWED_HOSTS']]
+SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-6j2@8g)ygvsiuvnh1w8cs&o)k**r')
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS','*')]
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ.get('DB_NAME'),
+#         'USER': os.environ.get('DB_USER'),
+#         'PASSWORD': os.environ.get('DB_PASSWORD'),
+#         'HOST': os.environ.get('DB_HOST'),
+#         'PORT': '5432',
+#     }
+# }
 
 DATABASES = {
     'default': {
@@ -13,7 +23,16 @@ DATABASES = {
     }
 }
 
-# DATABASES = { "default": dj_database_url.config() }
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID','AKIAUGYIA5HL2TEBDKMI')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY','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')
+AWS_STORAGE_BUCKET_NAME = 'bookishpdf'
+AWS_S3_SIGNATURE_NAME = 's3v4',
+AWS_S3_REGION_NAME = 'ap-south-1'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL =  None
+AWS_S3_VERITY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 
 # SECURE_SSL_REDIRECT = os.environ.get("DJANGO_SECURE_SSL_REDIRECT", True)
 # SECURE_HSTS_SECONDS = os.environ.get("DJANGO_SECURE_HSTS_SECONDS",2592000)
@@ -22,28 +41,6 @@ DATABASES = {
 # SESSION_COOKIE_SECURE = os.environ.get("DJANGO_SESSION_COOKIE_SECURE", True)
 # CSRF_COOKIE_SECURE = os.environ.get("DJANGO_CSRF_COOKIE_SECURE", True)
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') 
-
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-# AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-# AWS_ACCESS_KEY_ID= os.environ['AWS_ACCESS_KEY_ID']
-# AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-# AWS_S3_REGION_NAME = os.environ['AWS_S3_REGION_NAME']
-# AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-# AWS_DEFAULT_ACL = 'public-read'
-# AWS_QUERYSTRING_AUTH = False
-
-# MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
-
-
-
-
-# AWS_S3_OBJECT_PARAMETERS = {'CacheControl':'max-age-86400'}
-# AWS_S3_FILE_OVERWRITE = False
-# AWS_LOCATION = 'static'
-# AWS_HEADER = {'Access-Control-Allow-Origin':'*'}
-
-# ALLOWED_HOSTS = ['os.environ['DJANGO_ALLOWED_HOSTS']']
 
 # CACHE_MIDDLEWARE_ALIAS = 'default'
 # CACHE_MIDDLEWARE_SECONDS = 604800

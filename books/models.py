@@ -54,6 +54,8 @@ class Book(models.Model):
     
 
     def get_images(self,offset=0):
+        print('done till here')
+
         images = []
         with fitz.Document(filename=self.pdf.path, filetype='pdf') as pdf:
             for i in range(offset, offset + 4):
@@ -63,7 +65,6 @@ class Book(models.Model):
                 # Convert image data to a base64-encoded string
                 image_data_base64 = base64.b64encode(stream).decode("utf-8")
                 images.append(image_data_base64)
-
         return images
         
         

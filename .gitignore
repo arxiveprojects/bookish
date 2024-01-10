@@ -1,5 +1,6 @@
 *.pyc
 .env
+/install_launch.sh
 /general.log
 /staticfiles/
 /.venv/
