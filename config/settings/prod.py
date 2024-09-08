@@ -20,7 +20,7 @@ DATABASES = {
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID','AKIAUGYIA5HL2TEBDKMI')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY','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')
 AWS_STORAGE_BUCKET_NAME = 'bookishpdf'
-AWS_S3_REGION_NAME = 'ap-south-1'
+AWS_S3_REGION_NAME = 'us-east-1'
 
 
 # Static files (CSS, JavaScript, Images)
