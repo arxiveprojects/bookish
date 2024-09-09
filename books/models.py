@@ -54,7 +54,6 @@ class Book(models.Model):
     
 
     def get_images(self,offset=0):
-        print('done till here')
 
         images = []
         with fitz.Document(filename=self.pdf.path, filetype='pdf') as pdf:

@@ -3,7 +3,7 @@ from .common import *
 
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-6j2@8g)ygvsiuvnh1w8cs&o)k**r')
-ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS','*')]
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS','localhost')]
 
 DATABASES = {
     'default': {
