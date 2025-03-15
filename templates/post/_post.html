@@ -1,13 +1,64 @@
-
-<div class="card  text-bg-light border-light mb-3  w-100">
-  
+<!-- post.html -->
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-md mb-6 w-full md:w-3/4 mx-auto px-4 md:px-0">
     {% include 'post/_post_header.html' %}
-    <div style="padding: 0px;" class="card-body">
-        <div style="overflow-x: auto; white-space: nowrap;" class="d-flex overflow-x-scroll">
+    <div class="overflow-x-auto relative w-[calc(100vw-2rem)] md:w-full" style="scrollbar-width: thin;">
+        <div class="flex space-x-2 pb-2" style="width: max-content;">
             {% include 'partial/more_images.html' with images=book.get_images %}
-           
         </div>
     </div>
     {% include 'post/_post_footer.html' %}
 </div>
- 
+
+<!-- Image Modal -->
+<div id="imageModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-90 flex items-center justify-center p-4" onclick="closeModal()">
+    <div class="relative w-full h-full max-w-6xl" onclick="event.stopPropagation()">
+        <button class="absolute top-4 right-4 text-white text-3xl z-50 hover:text-gray-300 transition-colors"
+                onclick="closeModal()">
+            &times;
+        </button>
+        <div class="relative w-full h-full flex items-center justify-center">
+            <img id="modalImage" 
+                 class="max-w-full max-h-full cursor-pointer" 
+                 alt="Full size content"
+                 onclick="event.stopPropagation()">
+            <div class="spinner-border absolute text-white" style="display: none;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(src) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const spinner = modal.querySelector('.spinner-border');
+    
+    modal.classList.remove('hidden');
+    spinner.style.display = 'block';
+    modalImage.src = src;
+    document.body.classList.add('overflow-hidden');
+
+    modalImage.onload = function() {
+        spinner.style.display = 'none';
+    };
+
+    if (modalImage.complete) modalImage.onload();
+}
+
+function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+}
+
+// Close modal on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+
+// Close modal when clicking outside
+document.getElementById('imageModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+</script>

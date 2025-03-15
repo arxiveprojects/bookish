@@ -1,25 +1,27 @@
-{% extends '_base.html' %} {% block content %} {% if not books %}
-<div class="d-flex justify-content-center">
-  <h4>There is no book</h4>
+{% extends '_base.html' %}
+{% block content %}
+{% if not books %}
+<div class="flex justify-center">
+  <h4 class="text-center">There is no book</h4>
 </div>
-{% else %} {% for book in books %}
-<div
-  {%
-  if
-  forloop.last
-  %}
-  hx-get="{% url 'more_books' %}?offset=3"
-  hx-trigger="revealed"
-  hx-swap="afterend"
-  {%
-  endif
-  %}
->
-  {% include 'post/_post.html' %}
+{% else %}
+{% for book in books %}
+  <div 
+    class="flex justify-center" 
     {% if forloop.last %}
-      <div class="text-center">
-        <div class="spinner-border htmx-indicator" role="status"></div>
-      </div>
+      hx-get="{% url 'more_books' %}?offset=3"
+      hx-trigger="revealed"
+      hx-swap="afterend"
     {% endif %}
-</div>
-{% endfor %} {% endif %} {% endblock content %}
+  >
+  
+    {% include 'post/_post.html' %}
+    {% if forloop.last %}
+    <div class="text-center">
+      <div class="spinner-border htmx-indicator" role="status"></div>
+    </div>
+    {% endif %}
+  </div>
+{% endfor %}
+{% endif %}
+{% endblock content %}

@@ -1,45 +1,65 @@
-{% load humanize %} 
+<!-- templates/post/_post_footer.html -->
 
-<div class="card-footer text-bg-transparent border-light">
-    <div class="d-flex justify-content-around">
-        {% with total_likes=book.users_like.count users_like=book.users_like.all %}    
-        <div>
-            {% if request.user.is_authenticated %}
-                <a style="cursor: pointer;"  id="book-like-{{book.id}}" class="text-decoration-none" hx-swap="innerHTML" hx-traget="#book-like-{{book.id}}" hx-post="{% url 'like' book.id %}">
-                    {% if request.user not in users_like %}
-                        <i class="bi bi-hand-thumbs-up"></i>
-                    {% else %}
-                        <i class="bi bi-hand-thumbs-up-fill"></i>
-                    {% endif %}
-                    <span>{{total_likes|intword|intcomma}}</span>
-                </a>
-            {% else %}
-                {% if request.user not in users_like %}
-                    <i class="bi bi-hand-thumbs-up"></i>
-                {% else %}
-                    <i class="bi bi-hand-thumbs-up-fill"></i>
-                {% endif %}
-                <span>{{total_likes}}</span>
-            {% endif %}
-
-        </div>
+<div class="p-4 pt-2">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center space-x-8">
+        {% with total_likes=book.users_like.count users_like=book.users_like.all %}
+          {% if request.user.is_authenticated %}
+            <a id="book-like-{{book.id}}" 
+               class="flex items-center space-x-1 hover:text-blue-500"
+               hx-post="{% url 'like' book.id %}"
+               hx-swap="innerHTML"
+               hx-target="#book-like-{{book.id}}">
+              {% if request.user not in users_like %}
+                <i class="bi bi-heart text-xl text-red-500"></i>
+              {% else %}
+                <i class="bi bi-heart-fill text-xl text-red-500"></i>
+              {% endif %}
+              <span class="font-medium">{{total_likes}}</span>
+            </a>
+          {% endif %}
         {% endwith %}
+        <a
+          href="{{book.pdf.url}}"
+          download
+          class="bi bi-download"
+        >
+        </a>
+        <a
+          href="#"
+          class="bi bi-bookmark"
+        >
+        </a>
+        <button onclick="shareLink('{{book.id}}')" class="hover:text-blue-500">
+          <i class="bi bi-share text-xl"></i>
+        </button>
 
-        <div>
-            <a  class="bi bi-chat-left-text text-primary " href="{{book.get_absolute_url}}#comment"> </a>
-        </div>
-        <div>
-            <input type="url" hidden id="book-{{book.id}}-url" value="{{book.get_absolute_url}}">
-            <i style="cursor: pointer;" onclick="shareLink('{{book.id}}')" class="bi bi-share text-primary"></i>
-        </div>
-
+        
+        
+      </div>
+      <a href="{{book.get_absolute_url}}#comment" class="flex items-center space-x-1 hover:text-blue-500">
+        <i class="bi bi-chat-left-text text-xl"></i>
+        <span class="font-medium">{{book.comments.count}}</span>
+      </a>
+      
     </div>
-</div>
+  
+    <div class="text-sm">
+      <a href="{{book.get_absolute_url}}" 
+         class="font-semibold text-gray-800 hover:text-gray-600">
+        {{book.title}}
+      </a>
+      {% if book.description %}
+      <p class="text-gray-800 line-clamp-2">{{book.description}}</p>
+      {% endif %}
+    </div>
+  </div>
 
 <script>
     function shareLink(book_id){
-        var url = document.getElementById(`book-${book_id}-url`).value;
-        url = document.location.href +url 
+        // var url = document.getElementById(`book-${book_id}-url`).value;
+        url = document.location.href + '{{book.get_absolute_url}}'
+        console.log("URL:: ", url)
         if (url) {
             navigator.clipboard.writeText(url)
                 .then(function () {
@@ -52,5 +72,3 @@
     }
 </script>
 
-
-    

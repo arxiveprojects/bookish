@@ -1,93 +1,39 @@
-{% load humanize %} {% load static %}
+<!-- templates/post/_post_header.html -->
+{% load static %}
+{% load humanize %} 
 
-<div class="card-header text-bg-light border-light">
-  <div class="d-flex justify-content-between">
-    <div class="d-flex">
-      {% if book.user.image %}
-      <img
-        src="{{book.user.image.url}}"
-        alt="user dp"
-        width="32"
-        height="32"
-        class="rounded-circle"
-      />
-      {% else %}
-      <img
-        src="{% static  'img/user.png' %}"
-        alt="404 img"
-        width="32"
-        height="32"
-        class="rounded-circle"
-      />
-      {% endif %}
-      <div class="px-2 lh-1">
-        <a
-          class="h6 text-primary"
-          style="text-decoration: none"
-          href=" {% url 'profile' book.user.id %}"
-          >{{book.user.username}}</a
-        >
-        <p class="text-muted fw-lighter" style="font-size: 0.75em">
-          {{book.posted_at|naturaltime}}
-        </p>
-      </div>
-    </div>
-
-    {% if book.user == user %}
-    <div class="dropdown">
-      <i
-        class="bi bi-three-dots-vertical"
-        type="button"
-        id="dropdownMenuButton1"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-      </i>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-        <li>
-          <a class="dropdown-item" href="{% url 'book_edit' book.id %}">Edit</a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="{% url 'book_delete' book.id %}"
-            >Delete</a
-          >
-        </li>
-        <a
-          id="visibility-toggle{{book.id}}"
-          class="dropdown-item"
-          hx-post="{% url 'book_visibility' book.id %}"
-          hx-target="#visibility-toggle{{book.id}}"
-        >
-          {% if book.public %} Private {% else %} Public {% endif %}
-        </a>
-      </ul>
-    </div>
+<div class="flex items-center justify-between p-4">
+  <div class="flex items-center space-x-3">
+    {% if book.user.image %}
+      <img src="{{book.user.image.url}}" class="w-10 h-10 rounded-full">
+    {% else %}
+      <img src="{% static 'img/user.png' %}" class="w-10 h-10 rounded-full">
     {% endif %}
+    <div>
+      <a href="{% url 'profile' book.user.id %}" 
+         class="font-semibold text-gray-800 hover:text-gray-600">
+        {{book.user.username}}
+      </a>
+      <p class="text-xs text-gray-500">{{book.posted_at|naturaltime}}</p>
+    </div>
   </div>
-  <h6 class="card-text text-truncate">
-    <a
-      href="{{book.pdf.url}}"
-      download
-      class="text-decoration-none bi bi-download"
-    >
-    </a>
-    <small class="mx-3 text-muted">{{book.pages}} pages </small>
-    <a style="text-decoration: none" href="{{book.get_absolute_url}}"
-      >{{book.title}}</a
-    >
-  </h6>
-  {% if book.description %}
-  <p id="description" class="lh-1 pb-1 text-truncate" style="font-size: 0.75em">
-    {{book.description}}
-  </p>
-  {%endif %}
+
+  {% if book.user == user %}
+  <div class="relative group">
+    <button class="text-gray-500 hover:text-gray-700">
+      <i class="bi bi-three-dots-vertical text-xl"></i>
+    </button>
+    <div class="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
+      <a href="{% url 'book_edit' book.id %}" class="block px-4 py-2 hover:bg-gray-100">Edit</a>
+      <a href="{% url 'book_delete' book.id %}" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Delete</a>
+      <a id="visibility-toggle{{book.id}}" 
+         class="block px-4 py-2 hover:bg-gray-100"
+         hx-post="{% url 'book_visibility' book.id %}"
+         hx-target="#visibility-toggle{{book.id}}">
+        {% if book.public %}Private{% else %}Public{% endif %}
+      </a>
+    </div>
+  </div>
+  {% endif %}
 </div>
 
-<script>
-  var description = document.getElementById("description");
-  description.addEventListener("click", function () {
-    if (description.classList.contains("text-truncate"))
-      description.classList.remove("text-truncate");
-    else description.classList.add("text-truncate");
-  });
-</script>
