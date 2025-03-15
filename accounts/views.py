@@ -21,7 +21,7 @@ class ProfileUpdateView(LoginRequiredMixin,UserPassesTestMixin, generic.UpdateVi
     # fields= ('email', 'username', 'image', 'bio',)
     success_url= reverse_lazy('profile')
     form_class = CustomUserChangeForm
-    template_name= 'registration/edit_profile.html'
+    template_name= 'profile/edit_profile.html'
 
 
     def test_func(self):
