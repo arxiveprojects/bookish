@@ -1,25 +1,26 @@
 {% extends "_base.html" %}
 {% block content %}
-    <div class="d-flex justify-content-center">
-        <div class="card mb-3 p-2 w-100">
-            <div class="card-header bg-transparent "><h4>Delete Post</h4></div>  
+
+    <div class="flex justify-center">
+        <div class="bg-gray-100 border border-gray-300 shadow-md rounded-lg p-4 w-full max-w-lg">
+            <div class="border-b pb-2 mb-4">
+                <h4 class="text-lg font-semibold">Delete Post</h4>
+            </div>  
             
-                <form action="" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="card-body">
-                        <fieldset class="form-group">
-                            <legend class=""></legend>
-                            <h5>Are you sure you want to delete the post "{{ object.title }}"</h5>
-                        </fieldset>
-                    </div>
-                    <div class="card-body form-group">
-                        <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
-                        <a class="btn btn-outline-secondary" href="{% url 'profile' %}">Cancel</a>
-                    </div>
-                </form>
-            </div>
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <fieldset>
+                        <legend class="sr-only"></legend>
+                        <h5 class="text-gray-800">Are you sure you want to delete the post "{{ object.title }}"?</h5>
+                    </fieldset>
+                </div>
+                <div class="mt-4 flex space-x-4">
+                    <button class="border border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-red-500 hover:text-white transition" type="submit">Yes, Delete</button>
+                    <a class="border border-gray-500 text-gray-500 px-4 py-2 rounded-md hover:bg-gray-500 hover:text-white transition" href="{% url 'profile' %}">Cancel</a>
+                </div>
+            </form>
         </div>
     </div>
     
-
 {% endblock content %}

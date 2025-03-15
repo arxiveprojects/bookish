@@ -1,18 +1,21 @@
 {% extends "_base.html" %}
 {% block content %}
 
-    <div class="d-flex justify-content-center">
-        <div class="card text-bg-light border-light  mb-3 p-2 w-100">
-            <div class="card-header bg-transparent "><h5> Add New Post </h5></div>  
+    <div class="flex justify-center">
+        <div class="bg-gray-100 border border-gray-300 shadow-md rounded-lg p-4 w-full max-w-lg">
+            <div class="border-b pb-2 mb-4">
+                <h5 class="text-lg font-semibold">Add New Post</h5>
+            </div>  
             
-                <form action="" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="card-body">
-                        {{ form.as_p }}
-                        <button class="btn btn-success" type="submit"><i class="fas fa-upload"></i> Submit</button>
-                    </div>
-                </form>
-            </div>
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    {{ form.as_p }}
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition flex items-center gap-2" type="submit">
+                        <i class="fas fa-upload"></i> Submit
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
          
