@@ -1,23 +1,31 @@
 {% extends '_base.html' %}
-{% load static %}
 
-{% block title %}Sign Up{% endblock %}
+{% block title %} Log In {% endblock title%}
 
 {% block content %}
+
 <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
   <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-    <div class="text-center">
-      <h2 class="text-3xl font-bold text-gray-900">Log In</h2>
+        <div class="border-b pb-2 mb-4">
+            <h5 class="text-lg font-semibold">Log In</h5>
+        </div>  
+
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="space-y-4">
+                {{ form.as_p }}
+            </div>
+            <div class="mt-4">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full">
+                    Login
+                </button>
+            </div>
+            <div class="mt-4 text-center text-gray-600 text-sm">
+                Don't have an Account? 
+                <a class="text-blue-600 hover:underline" href="{% url 'signup' %}">Sign Up</a>
+            </div>
+        </form>
     </div>
-    
-    {% include "partial/base_form.html" with form=form submit_text="Log In" %}
-    
-    <div class="text-center text-sm text-gray-600">
-        Don't have an Account? 
-      <a href="{% url 'signup' %}" class="font-medium text-blue-600 hover:text-blue-500">
-        Sign Up
-      </a>
-    </div>
-  </div>
 </div>
-{% endblock %}
+
+{% endblock content %}

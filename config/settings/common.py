@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "django_htmx",
     "storages",
-    'widget_tweaks',
 
     'accounts',
     'books',

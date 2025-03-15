@@ -1,10 +1,10 @@
 {% load static %}
-<header class="py-3 mb-3 border-b border-gray-200 dark:border-gray-700">
+<header class="py-3 sticky bg-white px-4 top-0 mb-3 border-b border-gray-200 dark:border-gray-700">
     <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
      
-        <a href="{% url 'book_list' %}" class="flex items-center col-span-1 mb-2 md:mb-0 text-gray-800 dark:text-gray-200 hover:text-primary">
-            <img src="{% static 'img/favicon.png' %}" alt="book logo" width="32" height="32" class="rounded-full">
-        </a>
+      <a href="{% url 'book_list' %}" class="mb-2 md:mb-0 text-gray-800 dark:text-gray-200 hover:text-primary">
+          <img src="{% static 'img/favicon.png' %}" alt="book logo" width="32" height="32" class="rounded-full">
+      </a>
     
       <div class="flex items-center col-span-2 justify-between">
         <form action="{% url 'book_search' %}" method="get" class="w-full mr-3" role="search">
@@ -30,11 +30,10 @@
               </a>
               <a href="#" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Settings</a>
               <hr class="my-1 border-gray-200 dark:border-gray-700">
-              <!-- <a href="{% url 'logout' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Sign out</a> -->
               <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
                 <button class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" type="submit">Logout</button>
-            </form>
+              </form>
             </div>
           </div>
         {% endif %}
