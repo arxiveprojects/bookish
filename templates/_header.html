@@ -30,7 +30,11 @@
               </a>
               <a href="#" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Settings</a>
               <hr class="my-1 border-gray-200 dark:border-gray-700">
-              <a href="{% url 'logout' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Sign out</a>
+              <!-- <a href="{% url 'logout' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Sign out</a> -->
+              <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" type="submit">Logout</button>
+            </form>
             </div>
           </div>
         {% endif %}
