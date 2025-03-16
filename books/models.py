@@ -67,8 +67,15 @@ class Book(models.Model):
         return images
         
         
-class Comment(models.Model):
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) 
-    book = models.ForeignKey(Book, on_delete=models.CASCADE) 
+class Message(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="messages")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    query = models.TextField()
+    response = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['timestamp']
+
+    def __str__(self):
+        return f"{self.user.username}: {self.query[:30]}"

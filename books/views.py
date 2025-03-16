@@ -7,12 +7,13 @@ from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.postgres.search import TrigramSimilarity
 from django.urls import reverse_lazy
-from .models import Book,Comment
+from .models import Book, Message
 from .forms import BookCreationForm, BookUpdateForm
 # from .ask_pdf import ask_pdf,create_vectorstore
 from django.contrib.auth import get_user_model
 import fitz
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 User = get_user_model()
     
 def pages(pdf):
@@ -32,14 +33,13 @@ class BookListView(ListView):
     def get_queryset(self):
        return Book.publics.order_by('-posted_at').select_related('user').prefetch_related("users_like")
 
-
 class BookDetailView(DetailView):
-    model= Book
-    template_name='books/book_detail.html'
-    context_object_name= 'book'
+    model = Book
+    template_name = 'books/book_detail.html'
+    context_object_name = 'book'
 
     def get_queryset(self):
-       return Book.objects.all().select_related('user')
+        return Book.objects.select_related('user').prefetch_related('users_like')
 
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
@@ -149,27 +149,36 @@ def book_like(request,pk):
     return render(request,"partial/like.html",{"book":book})
 
 
-
-def get_comments(request,pk):
-    comments = Comment.objects.filter(book_id=pk).order_by('-created_at')[:10]
-    return render(request,"partial/comments.html",{'comments':comments})
-
-
+@login_required
+def get_messages(request,pk):
+    messages = Message.objects.filter(book_id=pk,user_id=request.user).order_by('-timestamp')[:10]
+    return render(request,"partial/messages.html",{'messages':messages})
 
 
 @login_required
 @require_POST
-def create_comment(request,pk):
+def post_message(request,pk):
     if request.method == "POST":
-        content = request.POST.get('comment')
-        comment = Comment(content=content, author=request.user, book_id=pk)
-        comment.save()
-        return render(request,"partial/comment.html",{'comment':comment})
+        book = get_object_or_404(Book, id=pk)
+        query = request.POST.get("query")
 
+        # Simulated AI response (replace with real AI model call)
+        ai_responses = [
+            "That's a great question!",
+            "I'm not sure, but I can find out.",
+            "This book is highly rated.",
+            "You might want to check the introduction section for that answer."
+        ]
+        response = ai_responses[0]
+
+        message = Message.objects.create(
+            book=book, user=request.user, query=query, response=response
+        )
+        return render(request,"partial/message.html",{'message':message})
 
 
 @login_required
-def delete_comment(request,pk):
-        comment = get_object_or_404(Comment, pk=pk)
-        comment.delete()
-        return HttpResponse("Comment Deleted")
+def delete_message(request,pk):
+        message = get_object_or_404(Message, pk=pk)
+        message.delete()
+        return HttpResponse("message Deleted")

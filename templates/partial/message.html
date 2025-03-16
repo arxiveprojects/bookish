@@ -1,0 +1,23 @@
+{% load humanize %}
+
+<div id="message-{{ message.id }}" class="mb-3 px-2">
+  <div class="flex flex-col space-y-2">
+    
+    <!-- User Query (Right) -->
+    <div class="flex justify-end">
+      <div class="bg-blue-500 text-white p-3 rounded-xl break-words max-w-xl shadow-md">
+        <p class="text-sm">{{ message.query }}</p>
+        <p class="text-xs text-right text-white opacity-70 mt-1">{{ message.timestamp|naturaltime }}</p>
+      </div>
+    </div>
+
+    <!-- AI Response (Left) -->
+    <div class="flex justify-start">
+      <div class="bg-gray-100 text-gray-900 p-3 rounded-xl break-words max-w-4xl shadow-md">
+        <p class="text-sm">{{ message.response }}</p>
+        <p class="text-xs text-left text-gray-500 opacity-70 mt-1">{{ message.timestamp|naturaltime }}</p>
+      </div>
+    </div>
+
+  </div>
+</div>
