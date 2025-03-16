@@ -1,79 +1,72 @@
 <!-- templates/post/_post_footer.html -->
-
 <div class="p-4 pt-2">
-    <div class="flex items-center justify-between mb-2">
-      <div class="flex items-center space-x-8">
-        {% with total_likes=book.users_like.count users_like=book.users_like.all %}
-          {% if request.user.is_authenticated %}
-            <a id="book-like-{{book.id}}" 
-               class="flex items-center space-x-1 hover:text-blue-500"
-               hx-post="{% url 'like' book.id %}"
-               hx-swap="innerHTML"
-               hx-target="#book-like-{{book.id}}">
-              {% if request.user not in users_like %}
-                <i class="bi bi-heart text-xl text-red-500"></i>
-              {% else %}
-                <i class="bi bi-heart-fill text-xl text-red-500"></i>
-              {% endif %}
-              <span class="font-medium">{{total_likes}}</span>
-            </a>
-          {% endif %}
-        {% endwith %}
-        <a
-          href="{{book.pdf.url}}"
-          download
-          class="bi bi-download hover:text-blue-500"
-        >
-        </a>
-        <!-- <a
-          href="#"
-          class="bi bi-bookmark"
-        >
-        </a> -->
-        <button onclick="shareLink('{{book.id}}')" class="hover:text-blue-500">
-          <i class="bi bi-share text-xl"></i>
-        </button>
-
-        
-        
-      </div>
-      <a href="{{book.get_absolute_url}}#message" class="flex items-center space-x-1 hover:text-blue-500">
-        <i class="bi bi-chat-left-text text-xl"></i>
-        <span class="font-medium">{{book.messages.count}}</span>
+  <div class="flex items-center justify-between mb-2">
+    <div class="flex items-center space-x-8">
+      {% with total_likes=book.users_like.count users_like=book.users_like.all %}
+        {% if request.user.is_authenticated %}
+          <a id="book-like-{{book.id}}" 
+             class="flex items-center space-x-1 hover:text-blue-500"
+             hx-post="{% url 'like' book.id %}"
+             hx-swap="innerHTML"
+             hx-target="#book-like-{{book.id}}">
+            {% if request.user not in users_like %}
+              <i class="bi bi-heart text-xl text-red-500"></i>
+            {% else %}
+              <i class="bi bi-heart-fill text-xl text-red-500"></i>
+            {% endif %}
+            <span class="font-medium">{{total_likes}}</span>
+          </a>
+        {% endif %}
+      {% endwith %}
+      <a
+        href="{{book.pdf.url}}"
+        download
+        class="bi bi-download hover:text-blue-500"
+      >
       </a>
-      
+      <button onclick="shareLink('{{book.id}}')" class="hover:text-blue-500">
+        <i class="bi bi-share text-xl"></i>
+      </button>
     </div>
-  
-    <div class="text-sm">
-      <div class="flex items-center gap-3">
-        <a href="{{book.get_absolute_url}}" 
-           class="font-semibold text-gray-800 hover:text-gray-600">
-          {{book.title}} 
-        </a>
-        <p  class="text-gray-700 text-xs">
-          ({{book.pages}} pages - {{book.size}})
-        </p>
-      </div>
-      {% if book.description %}
-      <p class="text-gray-800 line-clamp-2">{{book.description}}</p>
-      {% endif %}
-    </div>
+    <a href="{{book.get_absolute_url}}#message" class="flex items-center space-x-1 hover:text-blue-500">
+      <i class="bi bi-chat-left-text text-xl"></i>
+      <span class="font-medium">{{book.messages.count}}</span>
+    </a>
   </div>
 
-<script>
-    function shareLink(book_id){
-        // var url = document.getElementById(`book-${book_id}-url`).value;
-        url = document.location.href + '{{book.get_absolute_url}}'
-        console.log("URL:: ", url)
-        if (url) {
-            navigator.clipboard.writeText(url)
-                .then(function () {
-                    alert("URL copied");
-                })
-                .catch(function (error) {
-                    alert("Failed to copied" + error);
-                });
-        }
-    }
-</script>
+  <div class="text-sm">
+    <div class="flex items-center gap-3">
+      <a href="{{book.get_absolute_url}}" 
+         class="font-semibold text-gray-800 hover:text-gray-600">
+        {{book.title}} 
+      </a>
+      <p class="text-gray-700 text-xs">
+        ({{book.pages}} pages - {{book.size}})
+      </p>
+    </div>
 
+    {% if book.description %}
+    <p id="book-description-{{ book.id }}" 
+       class="text-gray-800 line-clamp-2 cursor-pointer transition-all duration-300 ease-in-out"
+       onclick="toggleDescription('{{ book.id }}')">
+      {{ book.description }}
+    </p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  function shareLink(book_id){
+      let url = document.location.href + '{{book.get_absolute_url}}';
+      navigator.clipboard.writeText(url).then(() => {
+          alert("URL copied");
+      }).catch(error => {
+          alert("Failed to copy: " + error);
+      });
+  }
+
+  function toggleDescription(bookId) {
+      const desc = document.getElementById(`book-description-${bookId}`);
+      desc.classList.toggle("line-clamp-2");
+  }
+</script>
