@@ -3,7 +3,7 @@
     <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
      
       <a href="{% url 'book_list' %}" class="mb-2 md:mb-0 text-gray-800 dark:text-gray-200 hover:text-primary">
-          <img src="{% static 'img/favicon.png' %}" alt="book logo" width="32" height="32" class="rounded-full">
+          <img src="{% static 'img/favicon.png' %}" alt="book logo" width="48" height="48" class="rounded-full">
       </a>
     
       <div class="flex items-center col-span-2 justify-between">
@@ -19,9 +19,9 @@
           <div class="relative">
             <button id="user-menu-button" class="flex items-center focus:outline-none" data-dropdown-toggle="user-dropdown" aria-expanded="false">
               {% if request.user.image %}
-                  <img src="{{request.user.image.url}}" alt="user dp" width="32" height="32" class="rounded-full">
+                  <img src="{{request.user.image.url}}" alt="user dp" width="48" height="48" class="rounded-full">
               {% else %}
-                  <img src="{% static 'img/user.png' %}" alt="not available" width="32" height="32" class="rounded-full">
+                  <img src="{% static 'img/user.png' %}" alt="not available" width="48" height="48" class="rounded-full">
               {% endif %}
             </button>
             <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
