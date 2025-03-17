@@ -1,0 +1,42 @@
+<!-- Chat UI -->
+<div class="w-full md:w-3/4 lg:w-2/3 mx-auto">
+    <!-- Chat Box -->
+    <div id="chat-box" class="h-[500px] overflow-y-auto shadow-lg rounded-xl p-4 bg-gradient-to-br from-gray-50 to-white space-y-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      <div id="messages" hx-get="{% url 'messages' book.id %}" hx-trigger="load" hx-swap="innerHTML" class="space-y-6">
+        <!-- Messages will be loaded here -->
+      </div>
+    </div>
+  
+    <!-- Chat Input -->
+    <form hx-post="{% url 'message' book.id %}" hx-target="#messages" hx-swap="beforeend"
+          class="flex items-center gap-3 mt-4 p-2 bg-white rounded-xl shadow-lg">
+        {% csrf_token %}
+        <input type="text" name="query" placeholder="Ask something..." required
+               class="flex-1 border-0 focus:ring-0 focus:outline-none bg-transparent px-4 py-3 placeholder-gray-400">
+        <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+        </button>
+    </form>
+  </div>
+  
+  <script>
+    document.addEventListener('htmx:afterSwap', function(evt) {
+      // Only run for messages container updates
+      if (evt.detail.target.id === 'messages') {
+        const chatBox = document.getElementById('chat-box');
+        // Smooth scroll to bottom
+        chatBox.scrollTo({
+          top: chatBox.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    });
+    
+    // Initial scroll when page loads
+    window.addEventListener('load', function() {
+      const chatBox = document.getElementById('chat-box');
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+    </script>
