@@ -17,3 +17,7 @@ $ python manage.py runserver
 ## Home Page
 
 ![Default Home View](./screenshot/home.png?raw=true "Home ss")
+
+## Detail Page
+
+![Detail Page View](./screenshot/detail.png?raw=true "detail ss")
