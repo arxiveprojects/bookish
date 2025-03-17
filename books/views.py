@@ -31,7 +31,7 @@ class BookListView(ListView):
     paginate_by = 3
 
     def get_queryset(self):
-       return Book.publics.order_by('-posted_at').select_related('user').prefetch_related("users_like")
+       return Book.publics.order_by('-posted_at').select_related('user').prefetch_related("users_like").prefetch_related("messages")
 
 class BookDetailView(DetailView):
     model = Book
@@ -39,7 +39,7 @@ class BookDetailView(DetailView):
     context_object_name = 'book'
 
     def get_queryset(self):
-        return Book.objects.select_related('user').prefetch_related('users_like')
+        return Book.objects.select_related('user').prefetch_related('users_like').prefetch_related("messages")
 
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
@@ -131,12 +131,42 @@ def get_book_images(request,pk):
 def profile(request,user_pk=None):
     if not user_pk:
         user = request.user
-        books = user.book.all().prefetch_related("users_like")
+        books = user.book.select_related('user').prefetch_related("users_like", "messages")
     else:
-        user = get_object_or_404(User, pk=user_pk)
-        books = user.book.filter(public = True).prefetch_related("users_like")
-    return render(request,"profile/profile.html",{"profile_user":user,"books":books})
+        user = get_object_or_404(User.objects.prefetch_related("followers").only("id", "username", "bio", "image"), pk=user_pk)
+        books = user.book.filter(public = True).select_related('user').prefetch_related("users_like").prefetch_related("messages")
+    is_following = request.user.following.filter(id=user.id).exists() if request.user.is_authenticated else False
 
+    return render(request,"profile/profile.html",
+                  {"profile_user":user,"books":books,   
+                   "total_books": books.count(),
+                   "total_followers": user.followers.count(),
+                   "total_following": user.following.count(),
+                   "is_following":is_following})
+
+
+# def profile(request, user_pk=None):
+#     # Fetch user profile efficiently with related fields
+#     if not user_pk:
+#         user = request.user
+#     else:
+#         user = get_object_or_404(
+#             User.objects.select_related("profile").only("id", "username", "bio", "image"), 
+#             pk=user_pk
+#         )
+
+#     # Prefetch related data to avoid repeated queries
+#     user = user.prefetch_related("followers", "following").get(pk=user.id)
+
+#     books = user.book.filter(public=True).select_related("user").prefetch_related("users_like", "messages")
+
+#     return render(request, "profile/profile.html", {
+#         "profile_user": user,
+#         "books": books,
+#         "total_books": books.count(),
+#         "total_followers": user.followers.count(),
+#         "total_following": user.following.count(),
+#     })
 
 @login_required
 def book_like(request,pk):

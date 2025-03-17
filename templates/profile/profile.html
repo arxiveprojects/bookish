@@ -14,15 +14,15 @@
   <div class="flex flex-col space-y-2">
     <div class="flex space-x-8 text-center">
       <div>
-        <span class="font-bold text-lg">{{ profile_user.book.all|length|intword|intcomma }}</span>
+        <span class="font-bold text-lg">{{ total_books|intword|intcomma }}</span>
         <div class="text-gray-500 text-xs">Books</div>
       </div>
       <div>
-        <span class="font-bold text-lg">{{ profile_user.followers.all|length|intword|intcomma }}</span>
+        <span class="font-bold text-lg">{{ total_followers|intword|intcomma }}</span>
         <div class="text-gray-500 text-xs">Followers</div>
       </div>
       <div>
-        <span class="font-bold text-lg">{{ profile_user.following.all|length|intword|intcomma }}</span>
+        <span class="font-bold text-lg">{{ total_following|intword|intcomma }}</span>
         <div class="text-gray-500 text-xs">Following</div>
       </div>
     </div>
@@ -34,7 +34,7 @@
           Edit
         </a>
       {% elif request.user.is_authenticated %}
-        {% if profile_user in request.user.following.all %}
+        {% if is_following %}
           <a hx-post="{% url 'follow' profile_user.id %}" 
              class="block text-center w-full bg-blue-600 text-white py-1.5 text-sm font-bold rounded hover:bg-blue-700 transition">
              <i class="bi bi-check-lg"></i> Following
