@@ -9,11 +9,9 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.urls import reverse_lazy
 from .models import Book, Message
 from .forms import BookCreationForm, BookUpdateForm
-# from .ask_pdf import ask_pdf,create_vectorstore
+from .ask_pdf import ask_pdf, process_file
 from django.contrib.auth import get_user_model
-import fitz
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+import fitz, os
 User = get_user_model()
     
 def pages(pdf):
@@ -41,27 +39,50 @@ class BookDetailView(DetailView):
     def get_queryset(self):
         return Book.objects.select_related('user').prefetch_related('users_like').prefetch_related("messages")
 
+
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
     template_name = 'books/book_form.html'
-    form_class= BookCreationForm
+    form_class = BookCreationForm
     success_url = reverse_lazy('profile')
-
+    
     def form_valid(self, form):
+        # Set the user before saving
         form.instance.user = self.request.user
-        BOOK = form.instance.pdf
-        pdf=BOOK.read()
-
-        if form.instance.title == '' or form.instance.title is None:
-            name = form.instance.pdf.name
-            form.instance.title = str(name).replace('book/pdfs/','').replace('.pdf','')
-        form.instance.title = str(form.instance.title).title()
         
+        # Handle file upload
+        pdf_file = form.cleaned_data['pdf']
+        
+        # Auto-generate title if not provided
+        if not form.instance.title:
+            filename = os.path.basename(pdf_file.name)
+            form.instance.title = os.path.splitext(filename)[0].title()
+        else:
+            form.instance.title = form.instance.title.title()
+        
+        # Save the form to get the file path
+        response = super().form_valid(form)
+        
+        # Now that the model is saved, we have access to the file path
         try:
-            form.instance.pages = pages(pdf)
+            # Get page count
+            with fitz.Document(filename=form.instance.pdf.path, filetype='pdf') as pdf_doc:
+                form.instance.pages = pdf_doc.page_count
+            
+            # Process the file with the actual file path
+            process_file(form.instance.pdf.path, form.instance.title)
+            form.instance.save()  # Save again to update the page count
+            
         except Exception as e:
-            return super().form_invalid(form)
-        return super().form_valid(form)
+            # Log the error
+            # logger.error(f"Error processing PDF: {e}")
+            # Delete the created object
+            form.instance.delete()
+            # Re-add the error to the form
+            form.add_error('pdf', f"Could not process PDF file: {e}")
+            return self.form_invalid(form)
+            
+        return response
 
 
 class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -100,14 +121,6 @@ class SearchResultsListView(ListView):
         return Book.publics.filter(title__icontains=query)#.annotate(similarity=TrigramSimilarity('title', query)).filter(similarity__gt=0.1).order_by('-similarity')
 
       
-
-# def ask_question(request,pk):
-#     question = request.POST.get('question')
-#     book = Book.objects.get(id=pk)
-#     vectorstore = create_vectorstore(book.pdf.path)
-#     answer =ask_pdf(question,vectorstore)["answer"]
-#     return render(request,"partial/answer.html",{"answer":answer})
- 
 def update_visibility(request,pk):
     book = Book.objects.get(id=pk)
     book.public = not book.public
@@ -145,29 +158,6 @@ def profile(request,user_pk=None):
                    "is_following":is_following})
 
 
-# def profile(request, user_pk=None):
-#     # Fetch user profile efficiently with related fields
-#     if not user_pk:
-#         user = request.user
-#     else:
-#         user = get_object_or_404(
-#             User.objects.select_related("profile").only("id", "username", "bio", "image"), 
-#             pk=user_pk
-#         )
-
-#     # Prefetch related data to avoid repeated queries
-#     user = user.prefetch_related("followers", "following").get(pk=user.id)
-
-#     books = user.book.filter(public=True).select_related("user").prefetch_related("users_like", "messages")
-
-#     return render(request, "profile/profile.html", {
-#         "profile_user": user,
-#         "books": books,
-#         "total_books": books.count(),
-#         "total_followers": user.followers.count(),
-#         "total_following": user.following.count(),
-#     })
-
 @login_required
 def book_like(request,pk):
     book = Book.objects.get(pk=pk)
@@ -192,14 +182,7 @@ def post_message(request,pk):
         book = get_object_or_404(Book, id=pk)
         query = request.POST.get("query")
 
-        # Simulated AI response (replace with real AI model call)
-        ai_responses = [
-            "That's a great question!",
-            "I'm not sure, but I can find out.",
-            "This book is highly rated.",
-            "You might want to check the introduction section for that answer."
-        ]
-        response = ai_responses[0]
+        response = ask_pdf(query,book.title)
 
         message = Message.objects.create(
             book=book, user=request.user, query=query, response=response
