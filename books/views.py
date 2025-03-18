@@ -170,24 +170,34 @@ def book_like(request,pk):
 
 
 @login_required
-def get_messages(request,pk):
-    messages = Message.objects.filter(book_id=pk,user_id=request.user).order_by('-timestamp')[:10]
-    return render(request,"partial/messages.html",{'messages':messages})
+def get_messages(request, pk):
+    book = get_object_or_404(Book, id=pk)
+    messages = Message.objects.filter(book=book).order_by('timestamp')
+    return render(request, "partial/messages.html", {'messages': messages})
 
 
 @login_required
 @require_POST
-def post_message(request,pk):
-    if request.method == "POST":
-        book = get_object_or_404(Book, id=pk)
-        query = request.POST.get("query")
+def post_message(request, pk):
+    book = get_object_or_404(Book, id=pk)
+    query = request.POST.get("query")
+    
+    # Create message with empty response first
+    message = Message.objects.create(
+        book=book, 
+        user=request.user, 
+        query=query, 
+        response=""  # Start with empty response
+    )
+    return render(request, "partial/message.html", {'message': message})
 
-        response = ask_pdf(query,book.title)
-
-        message = Message.objects.create(
-            book=book, user=request.user, query=query, response=response
-        )
-        return render(request,"partial/message.html",{'message':message})
+@login_required
+def generate_response(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+    # Generate response only when this endpoint is called
+    message.response = ask_pdf(message.query, message.book.title)
+    message.save()
+    return render(request, "partial/response.html", {'message': message})
 
 
 @login_required

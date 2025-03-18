@@ -1,1 +1,4 @@
-{% for message in messages %} {% include './message.html' %} {%endfor %}
+<!-- messages.html -->
+{% for message in messages %}
+  {% include "partial/message.html" with message=message is_last=forloop.last %}
+{% endfor %}

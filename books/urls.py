@@ -14,6 +14,8 @@ urlpatterns = [
     path('books/<uuid:pk>/like/', book_like, name='like'),
 
     path('books/<uuid:pk>/message/', post_message, name='message'),
+    path('generate-response/<int:message_id>/', generate_response, name='generate_response'),
+
     path('books/<uuid:pk>/messages/', get_messages, name='messages'),
     path('messages/<int:pk>', delete_message, name='delete_message'),
     path('profile/',profile,name= 'profile'),

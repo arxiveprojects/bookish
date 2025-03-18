@@ -8,20 +8,35 @@
     </div>
   
     <!-- Chat Input -->
-    <form hx-post="{% url 'message' book.id %}" hx-target="#messages" hx-swap="beforeend"
-          class="flex items-center gap-3 mt-4 p-2 bg-white rounded-xl shadow-lg">
-        {% csrf_token %}
-        <input type="text" name="query" placeholder="Ask something..." required
-               class="flex-1 border-0 focus:ring-0 focus:outline-none bg-transparent px-4 py-3 placeholder-gray-400">
-        <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
+    <form hx-post="{% url 'message' book.id %}" 
+        hx-target="#messages" 
+        hx-swap="beforeend"
+        class="flex items-center gap-3 mt-4 p-2 bg-white rounded-xl shadow-lg">
+          {% csrf_token %}
+          <input type="text" name="query" placeholder="Ask something..." required
+              class="flex-1 border-0 focus:ring-0 focus:outline-none bg-transparent px-4 py-3 placeholder-gray-400">
+          <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
             </svg>
-        </button>
+          </button>
     </form>
   </div>
+
+  
   
   <script>
+document.addEventListener('htmx:afterRequest', function(evt) {
+  // Clear input after successful message submission
+  if (evt.detail.successful && evt.detail.requestConfig.elt.tagName === 'FORM') {
+    const input = document.querySelector('input[name="query"]');
+    input.value = '';
+    input.focus();
+    
+   }
+});
+
+
     document.addEventListener('htmx:afterSwap', function(evt) {
       // Only run for messages container updates
       if (evt.detail.target.id === 'messages') {
