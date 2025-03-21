@@ -1,4 +1,7 @@
 <!-- templates/post/_post_footer.html -->
+{% load static %}
+
+
 <div class="p-4 pt-2">
   <div class="flex items-center justify-between mb-2">
     <div class="flex items-center space-x-8">
@@ -29,7 +32,7 @@
       </button>
     </div>
     <a href="{{book.get_absolute_url}}#message" class="flex items-center space-x-1 hover:text-blue-500">
-      <i class="bi bi-chat-left-text text-xl"></i>
+      <img class="w-6 h-6" src="{% static 'img/chat-ai.png' %}" alt="chat-ai icon">
       <!-- <span class="font-medium">{{book.messages.count}}</span> -->
     </a>
   </div>
