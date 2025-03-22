@@ -11,6 +11,8 @@ from .models import Book, Message
 from .forms import BookCreationForm, BookUpdateForm
 from .agentic_rag import ask_pdf, process_file
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
+
 import fitz, os
 User = get_user_model()
     
@@ -40,9 +42,9 @@ class BookDetailView(DetailView):
         return Book.objects.select_related('user').prefetch_related('users_like').prefetch_related("messages")
 
 
+
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
-    template_name = 'books/book_add_form.html'
     form_class = BookCreationForm
     success_url = reverse_lazy('profile')
     
@@ -69,7 +71,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             with fitz.Document(filename=form.instance.pdf.path, filetype='pdf') as pdf_doc:
                 form.instance.pages = pdf_doc.page_count
             # Process the file with the actual file path
-            process_file(file_path=form.instance.pdf.path, book_id= str(form.instance.id))
+            process_file(file_path=form.instance.pdf.path, book_id=str(form.instance.id))
             form.instance.save()  # Save again to update the page count
             
         except Exception as e:
@@ -80,8 +82,33 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             # Re-add the error to the form
             form.add_error('pdf', f"Could not process PDF file: {e}")
             return self.form_invalid(form)
+        
+        # For AJAX requests, return JSON response
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'redirect_url': self.get_success_url(),
+                'book_id': str(form.instance.id),
+                'title': form.instance.title
+            })
             
         return response
+    
+    def form_invalid(self, form):
+        """
+        Handle invalid form submission via AJAX
+        """
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            errors = {}
+            for field, error_list in form.errors.items():
+                errors[field] = [str(error) for error in error_list]
+            
+            return JsonResponse({
+                'success': False,
+                'errors': errors
+            }, status=400)
+            
+        return super().form_invalid(form)
 
 
 class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

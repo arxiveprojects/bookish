@@ -59,10 +59,61 @@
 
 {% if profile_user.id == request.user.id %}
   <div class="text-center my-4">
-    <a class="border border-gray-500 text-gray-500 px-4 py-2 rounded-md hover:bg-gray-500 hover:text-white transition text-sm"
-       href="{% url 'add_book' %}">
+    <a id="showUploadModal" class="border border-gray-500 text-gray-500 px-4 py-2 rounded-md hover:bg-gray-500 hover:text-white transition text-sm"
+       href="javascript:void(0);">
       Add Book
     </a>
+  </div>
+  
+  <!-- File Upload Modal -->
+  <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold">Add New Book</h3>
+        <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <form id="uploadForm" action="{% url 'add_book' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+          <label for="id_title" class="block text-gray-700 mb-1">Title (Optional)</label>
+          <input type="text" name="title" id="id_title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200">
+        </div>
+
+        <div class="mb-4">
+          <label for="id_description" class="block text-gray-700 mb-1">Description (Optional)</label>
+          <input type="text" name="description" id="id_description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200">
+          
+        </div>
+
+        <div class="mb-4">
+          <label for="id_public" class="block text-gray-700 mb-1">Visibility</label>
+          <input type="checkbox" name="public" id="id_public" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200">
+          <p class="text-sm text-gray-500 mt-1">By default, the book will be private</p>
+        </div>
+        
+        <div class="mb-4">
+          <label for="id_pdf" class="block text-gray-700 mb-1">PDF File</label>
+          <input type="file" name="pdf" id="id_pdf" accept=".pdf" class="w-full" required>
+          <p class="text-sm text-gray-500 mt-1">Maximum file size: 10MB</p>
+          <div id="file-error" class="text-red-500 text-sm mt-1 hidden"></div>
+        </div>
+        
+        <button type="submit" id="submitButton" class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+          Upload Book
+        </button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Upload Progress Container -->
+  <div id="uploadProgressContainer" class="w-full max-w-md mx-auto mb-6">
+    <!-- Progress bars will be added here dynamically -->
   </div>
 {% endif %}
 
@@ -76,4 +127,217 @@
   {% endfor %}
 {% endif %}
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const showModalBtn = document.getElementById('showUploadModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const modal = document.getElementById('uploadModal');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadProgressContainer = document.getElementById('uploadProgressContainer');
+    const fileInput = document.getElementById('id_pdf');
+    const submitButton = document.getElementById('submitButton');
+    const fileError = document.getElementById('file-error');
+    let uploadCounter = 0;
+    
+    // Configuration - Max file size in bytes (10MB)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    
+    // Store active uploads to prevent them from being cancelled
+    const activeUploads = {};
+    
+    // Show modal
+    if (showModalBtn) {
+      showModalBtn.addEventListener('click', function() {
+        modal.classList.remove('hidden');
+      });
+    }
+    
+    // Close modal
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener('click', function() {
+        modal.classList.add('hidden');
+        uploadForm.reset();
+        fileError.classList.add('hidden');
+        submitButton.disabled = false;
+      });
+    }
+    
+    // Validate file size on selection
+    if (fileInput) {
+      fileInput.addEventListener('change', function() {
+        fileError.classList.add('hidden');
+        submitButton.disabled = false;
+        
+        if (fileInput.files.length > 0) {
+          const fileSize = fileInput.files[0].size;
+          
+          if (fileSize > MAX_FILE_SIZE) {
+            fileError.textContent = `File size exceeds the maximum limit of ${formatFileSize(MAX_FILE_SIZE)}`;
+            fileError.classList.remove('hidden');
+            submitButton.disabled = true;
+          }
+        }
+      });
+    }
+    
+    // Handle form submission
+    if (uploadForm) {
+      uploadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Final validation before submission
+        if (fileInput.files.length > 0 && fileInput.files[0].size > MAX_FILE_SIZE) {
+          fileError.textContent = `File size exceeds the maximum limit of ${formatFileSize(MAX_FILE_SIZE)}`;
+          fileError.classList.remove('hidden');
+          return false;
+        }
+        
+        const formData = new FormData(uploadForm);
+        const xhr = new XMLHttpRequest();
+        const uploadId = 'upload-' + (++uploadCounter);
+        
+        // Get file name for display
+        const fileName = fileInput.files[0].name;
+        const fileSize = fileInput.files[0].size;
+        const displayTitle = document.getElementById('id_title').value || fileName;
+        
+        // Track this upload
+        activeUploads[uploadId] = xhr;
+        
+        // Create progress bar element
+        const progressElement = document.createElement('div');
+        progressElement.className = 'my-4 p-3 border border-gray-200 rounded-md bg-white shadow-sm';
+        progressElement.id = uploadId;
+        progressElement.innerHTML = `
+          <div class="flex justify-between items-center mb-1">
+            <div class="font-medium text-gray-700 truncate" style="max-width: 75%;" title="${displayTitle}">${displayTitle}</div>
+            <div class="text-xs text-gray-500 flex items-center">
+              <span id="${uploadId}-status">Uploading</span>
+              <span id="${uploadId}-percent" class="ml-2">0%</span>
+              <span class="ml-2">(${formatFileSize(fileSize)})</span>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="${uploadId}-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-200" style="width: 0%"></div>
+          </div>
+        `;
+        
+        // Add progress bar to container
+        uploadProgressContainer.prepend(progressElement);
+        
+        // Get progress elements
+        const progressBar = document.getElementById(`${uploadId}-bar`);
+        const progressPercent = document.getElementById(`${uploadId}-percent`);
+        const statusText = document.getElementById(`${uploadId}-status`);
+        
+        // Close the modal
+        modal.classList.add('hidden');
+        uploadForm.reset();
+        fileError.classList.add('hidden');
+        
+        // Track upload progress
+        xhr.upload.addEventListener('progress', function(event) {
+          if (event.lengthComputable) {
+            const percentComplete = Math.round((event.loaded / event.total) * 100);
+            progressBar.style.width = percentComplete + '%';
+            progressPercent.textContent = percentComplete + '%';
+            
+            if (percentComplete === 100) {
+              statusText.textContent = 'Processing';
+            }
+          }
+        });
+        
+        // Handle success
+        xhr.addEventListener('load', function() {
+          delete activeUploads[uploadId];
+          
+          if (xhr.status >= 200 && xhr.status < 300) {
+            progressBar.style.width = '100%';
+            progressPercent.textContent = '100%';
+            statusText.textContent = 'Complete';
+            
+            // Add success class
+            progressBar.classList.remove('bg-blue-600');
+            progressBar.classList.add('bg-green-600');
+            
+            // Add a remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'ml-2 text-gray-400 hover:text-gray-600';
+            removeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>';
+            
+            // Add event listener to remove the progress element
+            removeBtn.addEventListener('click', function() {
+              progressElement.remove();
+            });
+            
+            // Add the button to the status div
+            document.getElementById(`${uploadId}-status`).parentNode.appendChild(removeBtn);
+            
+            // Refresh the book list after a successful upload (optional)
+            setTimeout(function() {
+              location.reload();
+            }, 2000);
+          } else {
+            // Handle error response
+            statusText.textContent = 'Failed';
+            progressBar.classList.remove('bg-blue-600');
+            progressBar.classList.add('bg-red-600');
+            
+            try {
+              const response = JSON.parse(xhr.responseText);
+              if (response.errors) {
+                // Add error details
+                const errorDetail = document.createElement('div');
+                errorDetail.className = 'text-red-500 text-xs mt-1';
+                errorDetail.textContent = Object.values(response.errors).flat().join(', ');
+                progressElement.appendChild(errorDetail);
+              }
+            } catch (e) {
+              // Generic error
+              const errorDetail = document.createElement('div');
+              errorDetail.className = 'text-red-500 text-xs mt-1';
+              errorDetail.textContent = 'Upload failed. Please try again.';
+              progressElement.appendChild(errorDetail);
+            }
+          }
+        });
+        
+        // Handle network errors
+        xhr.addEventListener('error', function() {
+          delete activeUploads[uploadId];
+          statusText.textContent = 'Failed';
+          progressBar.classList.remove('bg-blue-600');
+          progressBar.classList.add('bg-red-600');
+          
+          const errorDetail = document.createElement('div');
+          errorDetail.className = 'text-red-500 text-xs mt-1';
+          errorDetail.textContent = 'Network error occurred. Please try again.';
+          progressElement.appendChild(errorDetail);
+        });
+        
+        // Send the request
+        xhr.open('POST', uploadForm.action, true);
+        xhr.send(formData);
+      });
+    }
+    
+    // Helper function to format file size
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' bytes';
+      else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      else return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+    
+    // Prevent uploads from being cancelled when navigating away
+    window.addEventListener('beforeunload', function(e) {
+      // If there are active uploads, show a confirmation dialog
+      if (Object.keys(activeUploads).length > 0) {
+        const confirmationMessage = 'You have uploads in progress. Are you sure you want to leave?';
+        (e || window.event).returnValue = confirmationMessage;
+        return confirmationMessage;
+      }
+    });
+  });
+</script>
 {% endblock content %}
