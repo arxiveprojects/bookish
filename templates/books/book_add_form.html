@@ -1,0 +1,26 @@
+{% extends '_base.html' %}
+
+{% block title %} Add new File {% endblock title %}
+
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
+        <div class="border-b pb-2 mb-4">
+            <h5 class="text-xl font-semibold text-gray-800 text-center">Add new File</h5>
+        </div>
+        
+        <form action="" method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            
+            {{form.as_p}}
+            
+            <div class="mt-4">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full">Add</button>
+            </div>
+          
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

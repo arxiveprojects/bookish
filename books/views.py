@@ -9,7 +9,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.urls import reverse_lazy
 from .models import Book, Message
 from .forms import BookCreationForm, BookUpdateForm
-from .ask_pdf import ask_pdf, process_file
+from .agentic_rag import ask_pdf, process_file
 from django.contrib.auth import get_user_model
 import fitz, os
 User = get_user_model()
@@ -42,7 +42,7 @@ class BookDetailView(DetailView):
 
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
-    template_name = 'books/book_form.html'
+    template_name = 'books/book_add_form.html'
     form_class = BookCreationForm
     success_url = reverse_lazy('profile')
     
@@ -68,9 +68,8 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             # Get page count
             with fitz.Document(filename=form.instance.pdf.path, filetype='pdf') as pdf_doc:
                 form.instance.pages = pdf_doc.page_count
-            
             # Process the file with the actual file path
-            process_file(form.instance.pdf.path, form.instance.title)
+            process_file(file_path=form.instance.pdf.path, book_id= str(form.instance.id))
             form.instance.save()  # Save again to update the page count
             
         except Exception as e:
@@ -87,7 +86,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
 
 class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Book
-    template_name = "books/book_form.html"
+    template_name = "books/book_edit_form.html"
     form_class= BookUpdateForm
     success_url = reverse_lazy('profile')
 
@@ -195,7 +194,7 @@ def post_message(request, pk):
 def generate_response(request, message_id):
     message = get_object_or_404(Message, id=message_id)
     # Generate response only when this endpoint is called
-    message.response = ask_pdf(message.query, message.book.title)
+    message.response = ask_pdf(message.query, str(message.book.id),message.book.title)
     message.save()
     return render(request, "partial/response.html", {'message': message})
 
