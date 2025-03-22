@@ -10,3 +10,4 @@
 /static/debug_toolbar/
 /static/django-htmx.js
 *.pem
+qdrant_storage
