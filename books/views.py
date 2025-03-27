@@ -12,6 +12,7 @@ from .forms import BookCreationForm, BookUpdateForm
 from .agentic_rag import ask_pdf, process_file
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from .tasks import process_pdf_task
 
 import fitz, os
 User = get_user_model()
@@ -72,7 +73,14 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             with fitz.Document(filename=form.instance.pdf.path, filetype='pdf') as pdf_doc:
                 form.instance.pages = pdf_doc.page_count
             # Process the file with the actual file path
-            process_file(file_path=form.instance.pdf.path, book_id=str(form.instance.id))
+
+            # process_file(file_path=form.instance.pdf.path, book_id=str(form.instance.id))
+
+            process_pdf_task.delay(
+                file_path=form.instance.pdf.path,
+                book_id=str(form.instance.id)
+            )
+
             form.instance.save()  # Save again to update the page count
             
         except Exception as e:
