@@ -7,6 +7,7 @@ from smolagents import CodeAgent, LiteLLMModel, Tool
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.models import Filter, FieldCondition, MatchValue
+from django.conf import settings
 import os 
 load_dotenv(".env")
 
@@ -15,7 +16,8 @@ COLLECTION_NAME = 'books_vectors'
 model = LiteLLMModel("gemini/gemini-2.0-flash-lite",api_key=os.getenv("GOOGLE_API_KEY"))
 llm = init_chat_model("google_genai:gemini-2.0-flash-lite")
 
-url = "http://localhost:6333"
+
+url = settings.QDRANT_URL
 client = QdrantClient(url)
 
 embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")

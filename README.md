@@ -14,6 +14,21 @@ $ python manage.py makemigrations
 $ python manage.py migrate
 $ python manage.py runserver
 ```
+
+## Production Setup with Docker
+
+```bash
+$ docker-compose build
+$ docker-compose up -d
+$ docker-compose exec web python manage.py migrate
+$ docker-compose exec web python manage.py collectstatic
+```
+
+## Development Setup
+```bash
+$ docker-compose -f docker-compose.dev.yml up
+```
+
 ## Home Page
 
 ![Default Home View](./screenshot/home.png?raw=true "Home ss")

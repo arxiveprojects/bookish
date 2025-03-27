@@ -45,6 +45,7 @@ class BookDetailView(DetailView):
 
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
+    template_name = 'books/book_add_form.html'
     form_class = BookCreationForm
     success_url = reverse_lazy('profile')
     

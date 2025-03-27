@@ -1,6 +1,8 @@
 from pathlib import Path
+from dotenv import load_dotenv
 import os
 
+load_dotenv(".env")
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
@@ -22,8 +24,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-# ADMIN_MEDIA_PREFIX = '/static/admin/'
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     
     "debug_toolbar",
+    # "corsheaders",
     "django_htmx",
     "storages",
 
@@ -55,7 +56,10 @@ MIDDLEWARE = [
     "django_htmx.middleware.HtmxMiddleware",
 ]
 
+INTERNAL_IPS = [ '127.0.0.1',]
+
 ROOT_URLCONF = 'config.urls'
+
 
 TEMPLATES = [
     {
@@ -96,31 +100,3 @@ USE_I18N = True
 USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-
-#         },
-#         'file': {
-#             'class': 'logging.FileHandler',
-#             'filename': 'general.log'
-#         },
-
-#     },
-#     'loggers': {
-#         '': {
-#             'handlers': ['console', 'file'],
-#             'level': os.environ.get('DJANGO_LOG_LEVEL', 'INFO')
-#         },
-#         'formatters': {
-#             'verbose': {
-#                 'formate': '{asctime} ({levelname}) - {name} -{message}',
-#                 'style': '{'
-#             }
-#         }
-#     },
-
-# }
