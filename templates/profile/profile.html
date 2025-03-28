@@ -37,12 +37,12 @@
         {% if is_following %}
           <a hx-post="{% url 'follow' profile_user.id %}" 
              class="block text-center w-full bg-blue-600 text-white py-1.5 text-sm font-bold rounded hover:bg-blue-700 transition">
-             <i class="bi bi-check-lg"></i> Following
+             Following
           </a>
         {% else %}
           <a hx-post="{% url 'follow' profile_user.id %}" 
              class="block text-center w-full bg-blue-600 text-white py-1.5 text-sm font-bold rounded hover:bg-blue-700 transition">
-             <i class="bi bi-plus"></i> Follow
+              Follow
           </a>
         {% endif %}
       {% endif %}

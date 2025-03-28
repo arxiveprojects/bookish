@@ -13,9 +13,13 @@
              hx-swap="innerHTML"
              hx-target="#book-like-{{book.id}}">
             {% if request.user not in users_like %}
-              <i class="bi bi-heart text-xl text-red-500"></i>
+            <svg width="16" height="16" class="text-red-500" fill="currentColor" viewBox="0 0 16 16">
+                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+            </svg>
             {% else %}
-              <i class="bi bi-heart-fill text-xl text-red-500"></i>
+            <svg width="16" height="16" fill="currentColor" class="text-red-500" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+            </svg>
             {% endif %}
             <span class="font-medium">{{total_likes}}</span>
           </a>
@@ -24,16 +28,25 @@
       <a
         href="{{book.pdf.url}}"
         download
-        class="bi bi-download hover:text-blue-500"
+        class="hover:text-blue-500"
       >
+        <svg width="16" height="16" fill="currentColor" class="" viewBox="0 0 16 16">
+          <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+          <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+        </svg>
       </a>
       <button onclick="shareLink('{{book.id}}')" class="hover:text-blue-500">
-        <i class="bi bi-share text-xl"></i>
+        <svg  width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5"/>
+        </svg>
       </button>
     </div>
     <a href="{{book.get_absolute_url}}#message" class="flex items-center space-x-1 hover:text-blue-500">
-      <img class="w-6 h-6" src="{% static 'img/chat-ai.png' %}" alt="chat-ai icon">
-      <!-- <span class="font-medium">{{book.messages.count}}</span> -->
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+        <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+      </svg>
+     
     </a>
   </div>
 
