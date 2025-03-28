@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     
     "debug_toolbar",
-    # "corsheaders",
     "django_htmx",
     "storages",
 
@@ -46,7 +45,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -99,4 +97,51 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Add Qdrant config
+QDRANT_URL = os.getenv("QDRANT_URL", "http://qdrant:6333")
+
+REDIS_URL = os.getenv("REDIS_URL","redis://redis:6379/0")
+
+CELERY_BROKER_URL = REDIS_URL
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "TIMEOUT": 10 * 60,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler'
+#         },
+#         'file': {
+#             'class': 'logging.FileHandler',
+#             'filename': 'general.log',
+#             'formatter': 'verbose'
+#         }
+#     },
+#     'loggers': {
+#         '': {
+#             'handlers': ['console', 'file'],
+#             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+#         }
+#     },
+#     'formatters': {
+#         'verbose': {
+#             'format': '{asctime} ({levelname}) - {name} - {message}',
+#             'style': '{'
+#         }
+#     }
+# }
+
 

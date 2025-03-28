@@ -13,8 +13,11 @@ from .agentic_rag import ask_pdf, process_file
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from .tasks import process_pdf_task
-
 import fitz, os
+import logging
+
+logger = logging.getLogger(__name__) 
+
 User = get_user_model()
     
 def pages(pdf):
@@ -74,12 +77,12 @@ class BookCreateView(LoginRequiredMixin, CreateView):
                 form.instance.pages = pdf_doc.page_count
             # Process the file with the actual file path
 
-            # process_file(file_path=form.instance.pdf.path, book_id=str(form.instance.id))
+            process_file(file_path=form.instance.pdf.path, book_id=str(form.instance.id))
 
-            process_pdf_task.delay(
-                file_path=form.instance.pdf.path,
-                book_id=str(form.instance.id)
-            )
+            # process_pdf_task.delay(
+            #     file_path=form.instance.pdf.path,
+            #     book_id=str(form.instance.id)
+            # )
 
             form.instance.save()  # Save again to update the page count
             
@@ -230,7 +233,11 @@ def post_message(request, pk):
 def generate_response(request, message_id):
     message = get_object_or_404(Message, id=message_id)
     # Generate response only when this endpoint is called
-    message.response = ask_pdf(message.query, str(message.book.id),message.book.title)
+    try:
+        message.response = ask_pdf(message.query, str(message.book.id),message.book.title)
+    except Exception as e:
+        message.response = "Please for few seconds, converting book text to embeddings"
+        logger.error(f"Error: {e}")
     message.save()
     return render(request, "partial/response.html", {'message': message})
 

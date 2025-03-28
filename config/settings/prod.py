@@ -1,16 +1,14 @@
 from .common import *
-
+import dj_database_url
 
 DEBUG = False
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(",")
 
-
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'bookishpdf'
 AWS_S3_REGION_NAME = 'us-east-1'
-
 
 # Static files (CSS, JavaScript, Images)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -19,7 +17,6 @@ STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/static/'
 # Media files (Uploaded PDFs, etc.)
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/media/'
-
 
 # S3 Configuration
 AWS_S3_OBJECT_PARAMETERS = {
@@ -32,35 +29,6 @@ AWS_QUERYSTRING_AUTH = False
 # DATABASES = {
 #     'default': dj_database_url.config()
 # }
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler'
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'general.log',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console', 'file'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO')
-        }
-    },
-    'formatters': {
-        'verbose': {
-            'format': '{asctime} ({levelname}) - {name} - {message}',
-            'style': '{'
-        }
-    }
-}
-
 
 
 # SECURE_SSL_REDIRECT = os.getenv("DJANGO_SECURE_SSL_REDIRECT", True)

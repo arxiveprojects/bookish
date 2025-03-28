@@ -41,6 +41,8 @@ WORKDIR /app
 # Copy application code
 COPY --chown=appuser:appuser . .
  
+RUN chmod +x wait-for-it.sh docker-entrypoint.sh
+
 # Set environment variables to optimize Python
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1 
@@ -51,7 +53,3 @@ USER appuser
 # Expose the application port
 EXPOSE 8000 
  
-# Start the application using Gunicorn
-# CMD ["gunicorn","--config", "python:gunicorn_config", "config.wsgi:application"]
-# 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3",", --timeout", "300" "config.wsgi:application"]
