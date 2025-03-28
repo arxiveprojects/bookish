@@ -8,7 +8,7 @@
     
       <div class="flex items-center col-span-2 justify-between">
         <form action="{% url 'book_search' %}" method="get" class="w-full mr-3" role="search">
-          <input name="q" class="w-full rounded-md border border-gray-300 dark:border-gray-700 px-4 py-2 bg-white dark:bg-gray-800 focus:ring-primary focus:border-primary" placeholder="Search..." aria-label="Search">
+          <input name="q" class="w-full rounded-md border border-gray-300 dark:border-gray-700 px-4 py-2 bg-white  focus:ring-primary focus:border-primary" placeholder="Search..." aria-label="Search">
         </form>
         
         {% if not request.user.is_authenticated %}
@@ -24,7 +24,7 @@
                   <img src="{% static 'img/user.png' %}" alt="not available" width="48" height="48" class="rounded-full">
               {% endif %}
             </button>
-            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
+            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white  rounded-md shadow-lg py-1 z-50">
               <a href="{% url 'profile' %}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                 {{ request.user.first_name|default:request.user.username}}'s Profile
               </a>

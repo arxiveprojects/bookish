@@ -176,7 +176,7 @@ def get_book_images(request,pk):
     offset = int(request.GET.get("offset","0"))
     book:Book = Book.objects.get(pk=pk)
     images = book.get_images(offset)
-    context ={"images":images,"book":book,"offset":offset+4}
+    context ={"images":images,"book":book,"offset":offset+1}
     return render(request, 'partial/more_images.html', context)
 
 def profile(request,user_pk=None):

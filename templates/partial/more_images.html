@@ -1,6 +1,6 @@
 <!-- partial/more_images.html -->
 {% for img in images %}
-<div class="flex-none w-48 sm:w-64" {% if forloop.last %} hx-get="{% url 'get_book_images' book.id %}?offset={{offset|default:4}}" hx-trigger="intersect once" hx-swap="afterend" hx-target="this" {% endif %}>
+<div class="flex-none w-48 sm:w-64" {% if forloop.last %} hx-get="{% url 'get_book_images' book.id %}?offset={{offset|default:1}}" hx-trigger="intersect once" hx-swap="afterend" hx-target="this" {% endif %}>
     <img class="w-64 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
          src="data:image/png;base64,{{ img }}"
          alt="{{book.title}}"

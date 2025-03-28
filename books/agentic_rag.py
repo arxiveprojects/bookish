@@ -10,7 +10,9 @@ from qdrant_client.models import Filter, FieldCondition, MatchValue
 from django.conf import settings
 import os 
 load_dotenv(".env")
+import logging
 
+logger = logging.getLogger(__name__)
 
 COLLECTION_NAME = 'books_vectors'
 model = LiteLLMModel("gemini/gemini-2.0-flash-lite",api_key=os.getenv("GOOGLE_API_KEY"))
@@ -23,7 +25,7 @@ client = QdrantClient(url)
 embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
 def process_file(file_path:str, book_id:str):
-    print(f"# Converting {file_path} text to vectore store with {book_id} in metadata")
+    logger.info(f"# Converting {file_path} text to vectore store with {book_id} in metadata")
 
     # Load and split documents
     loader = PyPDFLoader(file_path)
@@ -44,7 +46,7 @@ def process_file(file_path:str, book_id:str):
         collection_name=COLLECTION_NAME,
     )
         
-    print(f"# Book {book_id} stored as vectors.")
+    logger.info(f"# Book {book_id} stored as vectors.")
 
 
 
@@ -82,7 +84,7 @@ class RetrieverTool(Tool):
             query, 
             filter=book_filter 
         )
-        print("DOCS:: ",docs)
+        logger.info(f"DOCS:: {docs}")
         return "\nRetrieved documents:\n" + "".join(
             [f"\n\n===== Document {i} =====\n{doc.page_content}" 
              for i, doc in enumerate(docs)]
@@ -119,11 +121,11 @@ def get_agent(book_id):
     return agent
 
 def ask_pdf(question: str, book_id: str, book_name:str):
-    print("# Analyzing question:", question)
+    logger.info(f"# Analyzing question: {question}")
     agent = get_agent(book_id)
     response = agent.run(
         f"Original question to ask from document {book_name}: {question} \n"
        
     )
-    print("# Contextual response:", response)
+    logger.info(f"# Contextual response: {response}")
     return response

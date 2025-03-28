@@ -14,12 +14,9 @@
       hx-swap="afterend"
     {% endif %}
   >
-  
     {% include 'post/_post.html' %}
     {% if forloop.last %}
-    <div class="text-center">
-      <div class="spinner-border htmx-indicator" role="status"></div>
-    </div>
+      <span class="sr-only">Loading...</span>
     {% endif %}
   </div>
 {% endfor %}
