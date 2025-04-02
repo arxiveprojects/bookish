@@ -1,12 +1,15 @@
+{% load static %}
 <!-- post.html -->
-<div class="bg-white rounded-lg shadow-lg mb-6 w-full md:w-3/4 lg:w-1/2 mx-auto transition-all hover:shadow-xl">
+<div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6 w-full max-w-2xl mx-auto">
     {% include 'post/_post_header.html' %}
-    <div class="h-80 md:h-96 overflow-hidden">
-        <div class="flex justify-center items-center h-full p-4">
+    <div class="aspect-w-3 aspect-h-4 bg-gray-50 rounded-b-xl">
+        <div class="flex justify-center items-center p-4">
             {% if book.cover %}
-                <img src="{{ book.cover.url }}" class="object-contain max-h-full rounded-md shadow-sm" alt="{{book.title}} Book Cover">
+                <img src="{{ book.cover.url }}" class="object-contain h-96 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200" alt="{{book.title}} Book Cover">
             {% else %}
-                <img src="/static/img/no_image.png" class="object-contain max-h-full rounded-md opacity-75" alt="No Image Available">
+                <div class="w-full h-96 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg">
+                    <img src="/static/img/no_image.png" class="object-cover opacity-50 w-32 h-32" alt="No Image Available">
+                </div>
             {% endif %}
         </div>
     </div>
