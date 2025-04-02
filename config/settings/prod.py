@@ -31,6 +31,31 @@ AWS_QUERYSTRING_AUTH = False
 # }
 
 
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'general.log',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['file'],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} ({levelname}) - {name} - {message}',
+            'style': '{'
+        }
+    }
+}
+
 # SECURE_SSL_REDIRECT = os.getenv("DJANGO_SECURE_SSL_REDIRECT", True)
 # SECURE_HSTS_SECONDS = os.getenv("DJANGO_SECURE_HSTS_SECONDS",2592000)
 # SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", True)

@@ -28,25 +28,28 @@ def process_file(file_path:str, book_id:str):
     logger.info(f"# Converting {file_path} text to vectore store with {book_id} in metadata")
 
     # Load and split documents
-    loader = PyPDFLoader(file_path)
-    docs = loader.load()
-    
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200
-    )
-    splits = text_splitter.split_documents(docs)
-    for split in splits:
-        split.metadata["book_id"] = book_id
-
-    QdrantVectorStore.from_documents(
-        splits,
-        embeddings,
-        url=url,
-        collection_name=COLLECTION_NAME,
-    )
+    try:
+        loader = PyPDFLoader(file_path)
+        docs = loader.load()
         
-    logger.info(f"# Book {book_id} stored as vectors.")
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=200
+        )
+        splits = text_splitter.split_documents(docs)
+        for split in splits:
+            split.metadata["book_id"] = book_id
+
+        QdrantVectorStore.from_documents(
+            splits,
+            embeddings,
+            url=url,
+            collection_name=COLLECTION_NAME,
+        )
+    except Exception as e:
+        logger.error(f"Error storing embedding: {e}")
+    else:
+        logger.info(f"# Book {book_id} stored as vectors.")
 
 
 

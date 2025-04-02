@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
+from django.core.files.base import ContentFile
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.postgres.search import TrigramSimilarity
 from django.urls import reverse_lazy
@@ -75,6 +76,15 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             # Get page count
             with fitz.Document(filename=form.instance.pdf.path, filetype='pdf') as pdf_doc:
                 form.instance.pages = pdf_doc.page_count
+                # Extract the first page as an image
+                first_page = pdf_doc[0]
+                pixmap = first_page.get_pixmap()
+                # Convert the image to bytes and store it in the 'cover' field
+                form.instance.cover.save(
+                    f"{form.instance.title}_cover.png", 
+                    ContentFile(pixmap.tobytes("png"), name=f"{form.instance.title}_cover.png"), 
+                    save=False
+                )
             # Process the file with the actual file path
 
             process_file(file_path=form.instance.pdf.path, book_id=str(form.instance.id))
@@ -88,7 +98,7 @@ class BookCreateView(LoginRequiredMixin, CreateView):
             
         except Exception as e:
             # Log the error
-            # logger.error(f"Error processing PDF: {e}")
+            logger.error(f"Error processing PDF: {e}")
             # Delete the created object
             form.instance.delete()
             # Re-add the error to the form
@@ -163,8 +173,7 @@ def update_visibility(request,pk):
     book = Book.objects.get(id=pk)
     book.public = not book.public
     book.save()
-    visibility = "Private" if book.public else "Public"
-    return render(request,'partial/visibility.html',{"visibility":visibility})
+    return render(request,'partial/visibility.html',{"public":book.public})
 
 def more_books(request):
     offset = int(request.GET.get("offset"))

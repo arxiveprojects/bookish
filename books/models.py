@@ -6,12 +6,6 @@ from django.conf import settings
 from django.utils.text import slugify
 from books.validators import validate_pdf_size
 import uuid
-import fitz
-import base64
-
-
-
-    
 
 class PublicsManager(models.Manager):
     def get_queryset(self) -> QuerySet:
@@ -23,6 +17,7 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True,blank=True)
     pages = models.IntegerField(null=True, blank=True)
+    cover = models.ImageField(upload_to="book/covers", null=True, blank=True, validators=[FileExtensionValidator(allowed_extensions=['jpg','jpeg','png'])])
     pdf = models.FileField(upload_to="book/pdfs", validators=[ validate_pdf_size, FileExtensionValidator(allowed_extensions=['pdf'])])
     posted_at = models.DateTimeField(auto_now_add=True)
     public = models.BooleanField(default=True)
@@ -43,29 +38,14 @@ class Book(models.Model):
 
     def get_absolute_url(self):
         return reverse("book_detail", args=[str(self.id)])
-
-    class Meta:
-        ordering = ['-posted_at']
-    
     @property
     def size(self):
         kb = 1024
         return f"{self.pdf.size/(kb*kb):.2f} mb"
+
+    class Meta:
+        ordering = ['-posted_at']
     
-
-    def get_images(self,offset=0):
-
-        images = []
-        with fitz.Document(filename=self.pdf.path, filetype='pdf') as pdf:
-            for i in range(offset, offset + 4):
-                if i >= self.pages: break
-                image = pdf.get_page_pixmap(i)
-                stream = image.tobytes(output="png")
-                # Convert image data to a base64-encoded string
-                image_data_base64 = base64.b64encode(stream).decode("utf-8")
-                images.append(image_data_base64)
-        return images
-        
         
 class Message(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="messages")

@@ -102,8 +102,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 QDRANT_URL = os.getenv("QDRANT_URL", "http://qdrant:6333")
 
 REDIS_URL = os.getenv("REDIS_URL","redis://redis:6379/0")
-
+print("REDIS_URL", REDIS_URL)
 CELERY_BROKER_URL = REDIS_URL
+CELERY_TASK_ALWAYS_EAGER = True
 
 CACHES = {
     "default": {
@@ -112,34 +113,6 @@ CACHES = {
         "TIMEOUT": 10 * 60,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler'
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'general.log',
-            'formatter': 'verbose'
-        }
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console', 'file'],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
-        }
-    },
-    'formatters': {
-        'verbose': {
-            'format': '{asctime} ({levelname}) - {name} - {message}',
-            'style': '{'
         }
     }
 }
