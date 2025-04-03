@@ -13,6 +13,7 @@ from .forms import BookCreationForm, BookUpdateForm
 from .agentic_rag import ask_pdf, process_file
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from django.core.files.storage import default_storage
 from .tasks import process_pdf_task
 import fitz, os
 import logging
@@ -70,25 +71,30 @@ class BookCreateView(LoginRequiredMixin, CreateView):
         
         # Save the form to get the file path
         response = super().form_valid(form)
+
+
         
         # Now that the model is saved, we have access to the file path
         try:
+            pdf_file = form.instance.pdf
+            with default_storage.open(pdf_file.name, 'rb') as file:
+                pdf_data = file.read()
             # Get page count
-            with fitz.Document(filename=form.instance.pdf.path, filetype='pdf') as pdf_doc:
+            with fitz.Document(stream=pdf_data, filetype='pdf') as pdf_doc:
                 form.instance.pages = pdf_doc.page_count
-                # Extract the first page as an image
                 first_page = pdf_doc[0]
                 pixmap = first_page.get_pixmap()
-                # Convert the image to bytes and store it in the 'cover' field
+                
                 form.instance.cover.save(
                     f"{form.instance.title}_cover.png", 
-                    ContentFile(pixmap.tobytes("png"), name=f"{form.instance.title}_cover.png"), 
+                    ContentFile(pixmap.tobytes("png")), 
                     save=False
                 )
-            # Process the file with the actual file path
 
-            process_file(file_path=form.instance.pdf.path, book_id=str(form.instance.id))
+            # Update process_file call
+            process_file(file_content=pdf_data, book_id=str(form.instance.id))
 
+            form.instance.save()
             # process_pdf_task.delay(
             #     file_path=form.instance.pdf.path,
             #     book_id=str(form.instance.id)

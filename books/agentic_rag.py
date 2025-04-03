@@ -8,6 +8,10 @@ from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.models import Filter, FieldCondition, MatchValue
 from django.conf import settings
+from io import BytesIO
+from pypdf import PdfReader
+from langchain.schema import Document
+
 import os 
 load_dotenv(".env")
 import logging
@@ -24,28 +28,52 @@ client = QdrantClient(url)
 
 embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
-def process_file(file_path:str, book_id:str):
-    logger.info(f"# Converting {file_path} text to vectore store with {book_id} in metadata")
 
-    # Load and split documents
+def process_file(file_content: bytes, book_id: str):
+    logger.info(f"# Converting PDF content to vector store with {book_id} in metadata")
+
     try:
-        loader = PyPDFLoader(file_path)
-        docs = loader.load()
+        # Create in-memory PDF file from bytes
+        pdf_stream = BytesIO(file_content)
         
+        # Read PDF content using PyPDF2
+        pdf_reader = PdfReader(pdf_stream)
+        docs = []
+        
+        # Extract text from each page and create documents
+        for page_num, page in enumerate(pdf_reader.pages):
+            page_text = page.extract_text()
+            if page_text:
+                docs.append(
+                    Document(
+                        page_content=page_text,
+                        metadata={
+                            "source": f"page_{page_num + 1}",
+                            "page": page_num + 1,
+                            "book_id": book_id
+                        }
+                    )
+                )
+
+        # Split documents
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200
         )
         splits = text_splitter.split_documents(docs)
+        
+        # Add book_id to metadata for all splits
         for split in splits:
             split.metadata["book_id"] = book_id
 
+        # Store in Qdrant
         QdrantVectorStore.from_documents(
             splits,
             embeddings,
             url=url,
             collection_name=COLLECTION_NAME,
         )
+        
     except Exception as e:
         logger.error(f"Error storing embedding: {e}")
     else:

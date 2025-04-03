@@ -8,7 +8,7 @@
                 <img src="{{ book.cover.url }}" class="object-contain h-96 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200" alt="{{book.title}} Book Cover">
             {% else %}
                 <div class="w-full h-96 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg">
-                    <img src="/static/img/no_image.png" class="object-cover opacity-50 w-32 h-32" alt="No Image Available">
+                    <img src="{% static 'img/no_image.png' %}" class="object-cover opacity-50 w-32 h-32" alt="No Image Available">
                 </div>
             {% endif %}
         </div>

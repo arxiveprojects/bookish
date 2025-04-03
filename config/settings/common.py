@@ -11,14 +11,10 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'book_list'
 
-STATIC_URL = '/static/'
-STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
-STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-]
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -101,20 +97,32 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Add Qdrant config
 QDRANT_URL = os.getenv("QDRANT_URL", "http://qdrant:6333")
 
-REDIS_URL = os.getenv("REDIS_URL","redis://redis:6379/0")
-print("REDIS_URL", REDIS_URL)
-CELERY_BROKER_URL = REDIS_URL
-CELERY_TASK_ALWAYS_EAGER = True
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_URL,
-        "TIMEOUT": 10 * 60,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'general.log',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console', 'file'],
+            'level': os.environ.get('DJANGO_LOG_LEVEL', 'INFO')
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} ({levelname}) - {name} - {message}',
+            'style': '{'
         }
     }
 }
-
-
