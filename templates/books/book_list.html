@@ -1,13 +1,12 @@
 {% extends '_base.html' %}
 {% block content %}
 {% if not books %}
-<div class="flex justify-center">
+<div class="d-flex justify-content-center">
   <h4 class="text-center">There is no book</h4>
 </div>
 {% else %}
 {% for book in books %}
   <div 
-    class="flex justify-center" 
     {% if forloop.last %}
       hx-get="{% url 'more_books' %}?offset=3"
       hx-trigger="revealed"
@@ -16,7 +15,7 @@
   >
     {% include 'post/_post.html' %}
     {% if forloop.last %}
-      <span class="sr-only">Loading...</span>
+      <span class="visually-hidden">Loading...</span>
     {% endif %}
   </div>
 {% endfor %}

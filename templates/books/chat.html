@@ -1,8 +1,8 @@
 <!-- Chat UI -->
-<div class="w-full md:w-3/4 lg:w-2/3 mx-auto">
+<div class="w-100 mx-auto" style="max-width: 800px;">
     <!-- Chat Box -->
-    <div id="chat-box" class="h-[500px] overflow-y-auto shadow-lg rounded-xl p-4 bg-gradient-to-br from-gray-50 to-white space-y-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-      <div id="messages" hx-get="{% url 'messages' book.id %}" hx-trigger="load" hx-swap="innerHTML" class="space-y-6">
+    <div id="chat-box" class="overflow-auto shadow-lg rounded-3 p-4 bg-light" style="height: 500px;">
+      <div id="messages" hx-get="{% url 'messages' book.id %}" hx-trigger="load" hx-swap="innerHTML">
         <!-- Messages will be loaded here -->
       </div>
     </div>
@@ -11,13 +11,13 @@
     <form hx-post="{% url 'message' book.id %}" 
         hx-target="#messages" 
         hx-swap="beforeend"
-        class="flex items-center gap-3 mt-4 p-2 bg-white rounded-xl shadow-lg">
+        class="d-flex align-items-center gap-3 mt-4 p-2 bg-white rounded-3 shadow-lg">
           {% csrf_token %}
           <input type="text" name="query" placeholder="Ask something..." required
-              class="flex-1 border-0 focus:ring-0 focus:outline-none bg-transparent px-4 py-3 placeholder-gray-400">
-          <button type="submit" class=" pb-1 pr-1   rotate-45  hover:text-blue-500 transition-all duration-200">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+              class="form-control border-0 bg-transparent px-4 py-3">
+          <button type="submit" class="btn btn-link text-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+              <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11zM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493z"/>
             </svg>
           </button>
     </form>

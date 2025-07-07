@@ -3,33 +3,35 @@
 {% load markdown_filter %}
 
 <div id="message-{{ message.id }}" class="group animate-fade-in">
-  <div class="flex flex-col space-y-3 p-2 hover:bg-gray-50/50 rounded-lg transition-colors">
+  <div class="d-flex flex-column p-2">
     
     <!-- User Query -->
-    <div class="flex justify-end">
-      <div class="relative max-w-[85%] break-words bg-gradient-to-br from-blue-600 to-blue-500 text-white px-4 py-3 rounded-2xl rounded-br-none shadow-lg">
-        <p class="text-sm leading-relaxed">{{ message.query }}</p>
-        <span class="block text-xs text-blue-100/90 text-right mt-1.5">{{ message.timestamp|naturaltime }}</span>
+    <div class="d-flex justify-content-end mb-3">
+      <div class="bg-primary text-white p-3 rounded-3" style="max-width: 85%; border-bottom-right-radius: 0 !important;">
+        <p class="small">{{ message.query }}</p>
+        <span class="d-block small text-light text-end mt-1">{{ message.timestamp|naturaltime }}</span>
       </div>
     </div>
 
     <!-- AI Response -->
     {% if message.response %}
-      <div class="flex justify-start">
-        <div class="relative max-w-[85%] break-words bg-white border border-gray-100 px-4 py-3 rounded-2xl rounded-bl-none shadow-lg">
-          <p class="text-sm text-gray-800 leading-relaxed">{{ message.response |markdown|safe }}</p>
-          <span class="block text-xs text-gray-500/90 mt-1.5">{{ message.timestamp|naturaltime }}</span>
+      <div class="d-flex justify-content-start">
+        <div class="bg-white border p-3 rounded-3" style="max-width: 85%; border-bottom-left-radius: 0 !important;">
+          <p class="small text-dark">{{ message.response |markdown|safe }}</p>
+          <span class="d-block small text-muted mt-1">{{ message.timestamp|naturaltime }}</span>
         </div>
       </div>
     {% else %}
-      <div class="flex justify-start"
+      <div class="d-flex justify-content-start"
            hx-get="{% url 'generate_response' message.id %}"
            hx-trigger="load"
            hx-swap="outerHTML">
-        <div class="relative max-w-[85%] break-words bg-white border border-gray-100 px-4 py-3 rounded-2xl rounded-bl-none shadow-lg">
-          <div class="flex items-center space-x-2 text-gray-500">
-            <div class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-            <span class="text-sm">Analyzing...</span>
+        <div class="bg-white border p-3 rounded-3" style="max-width: 85%; border-bottom-left-radius: 0 !important;">
+          <div class="d-flex align-items-center text-muted">
+            <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <span class="small">Analyzing...</span>
           </div>
         </div>
       </div>

@@ -2,9 +2,9 @@
 {% load humanize %}
 {% load markdown_filter %}
 
-<div class="flex justify-start">
-    <div class="relative max-w-[85%] break-words bg-white border border-gray-100 px-4 py-3 rounded-2xl rounded-bl-none shadow-lg">
-      <p class="text-sm text-gray-800 leading-relaxed">{{ message.response|markdown|safe }}</p>
-      <span class="block text-xs text-gray-500/90 mt-1.5">{{ message.timestamp|naturaltime }}</span>
+<div class="d-flex justify-content-start">
+    <div class="bg-white border p-3 rounded-3" style="max-width: 85%; border-bottom-left-radius: 0 !important;">
+      <p class="small text-dark">{{ message.response|markdown|safe }}</p>
+      <span class="d-block small text-muted mt-1">{{ message.timestamp|naturaltime }}</span>
     </div>
 </div>

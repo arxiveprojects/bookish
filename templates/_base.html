@@ -7,13 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %} Bookish Pdf {% endblock title %}</title>
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.png' %}" />
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" >
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
   </head>
-  <body class="bg-gray-50 text-gray-800">
+  <body class="bg-light text-dark">
    
-    <div class="container mx-auto max-w-6xl px-1 pb-8">
+    <div class="container py-4">
       {% include "_header.html" %} {% block content %} {% endblock content %}
     </div>
     
@@ -27,33 +27,18 @@
 
     <script src="{% static 'js/index.js' %}" defer></script>
     <script src="{% static 'js/htmx.min.js' %}" defer></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: {
-                DEFAULT: "#3b82f6",
-                hover: "#2563eb",
-              },
-            },
-          },
-        },
-      };
-    </script>
-    <style type="text/tailwindcss">
-      @layer utilities {
-        .htmx-indicator {
-          opacity: 0;
-          transition: opacity 500ms ease-in;
-        }
-        .htmx-request .htmx-indicator {
-          opacity: 1;
-        }
-        .htmx-request.htmx-indicator {
-          opacity: 1;
-        }
+    <!-- Bootstrap JS -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <style>
+      .htmx-indicator {
+        opacity: 0;
+        transition: opacity 500ms ease-in;
+      }
+      .htmx-request .htmx-indicator {
+        opacity: 1;
+      }
+      .htmx-request.htmx-indicator {
+        opacity: 1;
       }
     </style>
   </body>

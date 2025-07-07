@@ -4,46 +4,39 @@
 {% block title %} {{ profile_user.username }} {% endblock title %}
 {% block content %}
 
-<div class="my-4 mx-2 flex items-start space-x-4">
+<div class="my-4 mx-2 d-flex align-items-start">
   {% if profile_user.image %}
-    <img src="{{ profile_user.image.url }}" alt="user dp" width="75" height="75" class="rounded-full">
+    <img src="{{ profile_user.image.url }}" alt="user dp" width="75" height="75" class="rounded-circle me-4">
   {% else %}
-    <img src="{% static 'img/user.png' %}" alt="404 img" width="75" height="75" class="rounded-full">
+    <img src="{% static 'img/user.png' %}" alt="404 img" width="75" height="75" class="rounded-circle me-4">
   {% endif %}
 
-  <div class="flex flex-col space-y-2">
-    <div class="flex space-x-8 text-center">
+  <div class="flex-grow-1">
+    <div class="d-flex justify-content-around text-center mb-3">
       <div>
-        <span class="font-bold text-lg">{{ total_books|intword|intcomma }}</span>
-        <div class="text-gray-500 text-xs">Books</div>
+        <span class="fw-bold fs-5">{{ total_books|intword|intcomma }}</span>
+        <div class="text-muted small">Books</div>
       </div>
       <div>
-        <span class="font-bold text-lg">{{ total_followers|intword|intcomma }}</span>
-        <div class="text-gray-500 text-xs">Followers</div>
+        <span class="fw-bold fs-5">{{ total_followers|intword|intcomma }}</span>
+        <div class="text-muted small">Followers</div>
       </div>
       <div>
-        <span class="font-bold text-lg">{{ total_following|intword|intcomma }}</span>
-        <div class="text-gray-500 text-xs">Following</div>
+        <span class="fw-bold fs-5">{{ total_following|intword|intcomma }}</span>
+        <div class="text-muted small">Following</div>
       </div>
     </div>
 
-    <div class="mt-2">
+    <div class="d-grid">
       {% if profile_user.id == request.user.id %}
-        <a class="block w-full bg-blue-600 text-white text-center py-1.5 text-sm font-bold rounded hover:bg-blue-700 transition" 
-           href="{% url 'edit_profile' profile_user.id %}">
+        <a class="btn btn-primary btn-sm" href="{% url 'edit_profile' profile_user.id %}">
           Edit
         </a>
       {% elif request.user.is_authenticated %}
         {% if is_following %}
-          <a hx-post="{% url 'follow' profile_user.id %}" 
-             class="block text-center w-full bg-blue-600 text-white py-1.5 text-sm font-bold rounded hover:bg-blue-700 transition">
-             Following
-          </a>
+          <a hx-post="{% url 'follow' profile_user.id %}" class="btn btn-primary btn-sm">Following</a>
         {% else %}
-          <a hx-post="{% url 'follow' profile_user.id %}" 
-             class="block text-center w-full bg-blue-600 text-white py-1.5 text-sm font-bold rounded hover:bg-blue-700 transition">
-              Follow
-          </a>
+          <a hx-post="{% url 'follow' profile_user.id %}" class="btn btn-outline-primary btn-sm">Follow</a>
         {% endif %}
       {% endif %}
     </div>
@@ -51,7 +44,7 @@
 </div>
 
 <div class="mx-2">
-  <h3 class="text-lg font-semibold">{{ profile_user.username }}</h3>
+  <h3 class="fs-5 fw-semibold">{{ profile_user.username }}</h3>
   <p>{% if profile_user.bio %} {{ profile_user.bio }} <br> {% endif %}</p>
 </div>
 
@@ -59,61 +52,59 @@
 
 {% if profile_user.id == request.user.id %}
   <div class="text-center my-4">
-    <a id="showUploadModal" class="border border-gray-500 text-gray-500 px-4 py-2 rounded-md hover:bg-gray-500 hover:text-white transition text-sm"
-       href="javascript:void(0);">
+    <button id="showUploadModal" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
       Add Book
-    </a>
+    </button>
   </div>
   
   <!-- File Upload Modal -->
-  <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-semibold">Add New Book</h3>
-        <button id="closeModal" class="text-gray-500 hover:text-gray-700">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      
-      <form id="uploadForm" action="{% url 'add_book' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
-        {% csrf_token %}
-        
-        <div class="mb-4">
-          <label for="id_title" class="block text-gray-700 mb-1">Title (Optional)</label>
-          <input type="text" name="title" id="id_title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200">
+  <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="uploadModalLabel">Add New Book</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <form id="uploadForm" action="{% url 'add_book' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+              <label for="id_title" class="form-label">Title (Optional)</label>
+              <input type="text" name="title" id="id_title" class="form-control">
+            </div>
 
-        <div class="mb-4">
-          <label for="id_public" class="block text-gray-700 mb-1">Visibility</label>
-          <input type="checkbox" name="public" id="id_public" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200">
-          <p class="text-sm text-gray-500 mt-1">By default, the book will be private</p>
+            <div class="mb-3 form-check">
+              <input type="checkbox" name="public" id="id_public" class="form-check-input">
+              <label for="id_public" class="form-check-label">Make book public</label>
+              <div class="form-text">By default, the book will be private.</div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="id_pdf" class="form-label">PDF File</label>
+              <input type="file" name="pdf" id="id_pdf" accept=".pdf" class="form-control" required>
+              <div class="form-text">Maximum file size: 10MB</div>
+              <div id="file-error" class="text-danger small mt-1 d-none"></div>
+            </div>
+            
+            <button type="submit" id="submitButton" class="btn btn-primary w-100">
+              Upload Book
+            </button>
+          </form>
         </div>
-        
-        <div class="mb-4">
-          <label for="id_pdf" class="block text-gray-700 mb-1">PDF File</label>
-          <input type="file" name="pdf" id="id_pdf" accept=".pdf" class="w-full" required>
-          <p class="text-sm text-gray-500 mt-1">Maximum file size: 10MB</p>
-          <div id="file-error" class="text-red-500 text-sm mt-1 hidden"></div>
-        </div>
-        
-        <button type="submit" id="submitButton" class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-          Upload Book
-        </button>
-      </form>
+      </div>
     </div>
   </div>
   
   <!-- Upload Progress Container -->
-  <div id="uploadProgressContainer" class="w-full max-w-md mx-auto mb-6">
+  <div id="uploadProgressContainer" class="w-100 mx-auto mb-4" style="max-width: 576px;">
     <!-- Progress bars will be added here dynamically -->
   </div>
 {% endif %}
 
 {% if not books %}
-  <div class="flex justify-center">
-    <h4 class="text-gray-700">There is no book</h4>
+  <div class="d-flex justify-content-center">
+    <h4 class="text-muted">There is no book</h4>
   </div>
 {% else %}
   {% for book in books %}
@@ -123,9 +114,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const showModalBtn = document.getElementById('showUploadModal');
-    const closeModalBtn = document.getElementById('closeModal');
-    const modal = document.getElementById('uploadModal');
+    const uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
     const uploadForm = document.getElementById('uploadForm');
     const uploadProgressContainer = document.getElementById('uploadProgressContainer');
     const fileInput = document.getElementById('id_pdf');
@@ -133,56 +122,38 @@
     const fileError = document.getElementById('file-error');
     let uploadCounter = 0;
     
-    // Configuration - Max file size in bytes (10MB)
-    const MAX_FILE_SIZE = 10 * 1024 * 1024;
-    
-    // Store active uploads to prevent them from being cancelled
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     const activeUploads = {};
-    
-    // Show modal
-    if (showModalBtn) {
-      showModalBtn.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-      });
-    }
-    
-    // Close modal
-    if (closeModalBtn) {
-      closeModalBtn.addEventListener('click', function() {
-        modal.classList.add('hidden');
+
+    document.getElementById('uploadModal').addEventListener('hidden.bs.modal', function () {
         uploadForm.reset();
-        fileError.classList.add('hidden');
+        fileError.classList.add('d-none');
         submitButton.disabled = false;
-      });
-    }
-    
-    // Validate file size on selection
+    });
+
     if (fileInput) {
       fileInput.addEventListener('change', function() {
-        fileError.classList.add('hidden');
+        fileError.classList.add('d-none');
         submitButton.disabled = false;
         
         if (fileInput.files.length > 0) {
           const fileSize = fileInput.files[0].size;
-          
           if (fileSize > MAX_FILE_SIZE) {
             fileError.textContent = `File size exceeds the maximum limit of ${formatFileSize(MAX_FILE_SIZE)}`;
-            fileError.classList.remove('hidden');
+            fileError.classList.remove('d-none');
             submitButton.disabled = true;
           }
         }
       });
     }
-    
-    // Handle form submission
+
     if (uploadForm) {
       uploadForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Final validation before submission
         if (fileInput.files.length > 0 && fileInput.files[0].size > MAX_FILE_SIZE) {
           fileError.textContent = `File size exceeds the maximum limit of ${formatFileSize(MAX_FILE_SIZE)}`;
-          fileError.classList.remove('hidden');
+          fileError.classList.remove('d-none');
           return false;
         }
         
@@ -190,50 +161,44 @@
         const xhr = new XMLHttpRequest();
         const uploadId = 'upload-' + (++uploadCounter);
         
-        // Get file name for display
         const fileName = fileInput.files[0].name;
         const fileSize = fileInput.files[0].size;
         const displayTitle = document.getElementById('id_title').value || fileName;
         
-        // Track this upload
         activeUploads[uploadId] = xhr;
         
-        // Create progress bar element
         const progressElement = document.createElement('div');
-        progressElement.className = 'my-4 p-3 border border-gray-200 rounded-md bg-white shadow-sm';
+        progressElement.className = 'my-3 p-3 border rounded bg-white shadow-sm';
         progressElement.id = uploadId;
         progressElement.innerHTML = `
-          <div class="flex justify-between items-center mb-1">
-            <div class="font-medium text-gray-700 truncate" style="max-width: 75%;" title="${displayTitle}">${displayTitle}</div>
-            <div class="text-xs text-gray-500 flex items-center">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <div class="fw-medium text-truncate" style="max-width: 75%;" title="${displayTitle}">${displayTitle}</div>
+            <div class="small text-muted d-flex align-items-center">
               <span id="${uploadId}-status">Uploading</span>
-              <span id="${uploadId}-percent" class="ml-2">0%</span>
-              <span class="ml-2">(${formatFileSize(fileSize)})</span>
+              <span id="${uploadId}-percent" class="ms-2">0%</span>
+              <span class="ms-2">(${formatFileSize(fileSize)})</span>
             </div>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-2">
-            <div id="${uploadId}-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-200" style="width: 0%"></div>
+          <div class="progress" style="height: 8px;">
+            <div id="${uploadId}-bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
         `;
         
-        // Add progress bar to container
         uploadProgressContainer.prepend(progressElement);
         
-        // Get progress elements
         const progressBar = document.getElementById(`${uploadId}-bar`);
         const progressPercent = document.getElementById(`${uploadId}-percent`);
         const statusText = document.getElementById(`${uploadId}-status`);
         
-        // Close the modal
-        modal.classList.add('hidden');
+        uploadModal.hide();
         uploadForm.reset();
-        fileError.classList.add('hidden');
+        fileError.classList.add('d-none');
         
-        // Track upload progress
         xhr.upload.addEventListener('progress', function(event) {
           if (event.lengthComputable) {
             const percentComplete = Math.round((event.loaded / event.total) * 100);
             progressBar.style.width = percentComplete + '%';
+            progressBar.setAttribute('aria-valuenow', percentComplete);
             progressPercent.textContent = percentComplete + '%';
             
             if (percentComplete === 100) {
@@ -242,90 +207,64 @@
           }
         });
         
-        // Handle success
         xhr.addEventListener('load', function() {
           delete activeUploads[uploadId];
           
           if (xhr.status >= 200 && xhr.status < 300) {
             progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
             progressPercent.textContent = '100%';
             statusText.textContent = 'Complete';
+            progressBar.classList.add('bg-success');
             
-            // Add success class
-            progressBar.classList.remove('bg-blue-600');
-            progressBar.classList.add('bg-green-600');
-            
-            // Add a remove button
             const removeBtn = document.createElement('button');
-            removeBtn.className = 'ml-2 text-gray-400 hover:text-gray-600';
-            removeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>';
+            removeBtn.className = 'btn-close btn-sm ms-2';
+            removeBtn.addEventListener('click', () => progressElement.remove());
+            statusText.parentNode.appendChild(removeBtn);
             
-            // Add event listener to remove the progress element
-            removeBtn.addEventListener('click', function() {
-              progressElement.remove();
-            });
-            
-            // Add the button to the status div
-            document.getElementById(`${uploadId}-status`).parentNode.appendChild(removeBtn);
-            
-            // Refresh the book list after a successful upload (optional)
-            setTimeout(function() {
-              location.reload();
-            }, 2000);
+            setTimeout(() => location.reload(), 2000);
           } else {
-            // Handle error response
             statusText.textContent = 'Failed';
-            progressBar.classList.remove('bg-blue-600');
-            progressBar.classList.add('bg-red-600');
-            
+            progressBar.classList.add('bg-danger');
             try {
               const response = JSON.parse(xhr.responseText);
               if (response.errors) {
-                // Add error details
                 const errorDetail = document.createElement('div');
-                errorDetail.className = 'text-red-500 text-xs mt-1';
+                errorDetail.className = 'text-danger small mt-1';
                 errorDetail.textContent = Object.values(response.errors).flat().join(', ');
                 progressElement.appendChild(errorDetail);
               }
             } catch (e) {
-              // Generic error
               const errorDetail = document.createElement('div');
-              errorDetail.className = 'text-red-500 text-xs mt-1';
+              errorDetail.className = 'text-danger small mt-1';
               errorDetail.textContent = 'Upload failed. Please try again.';
               progressElement.appendChild(errorDetail);
             }
           }
         });
         
-        // Handle network errors
         xhr.addEventListener('error', function() {
           delete activeUploads[uploadId];
           statusText.textContent = 'Failed';
-          progressBar.classList.remove('bg-blue-600');
-          progressBar.classList.add('bg-red-600');
-          
+          progressBar.classList.add('bg-danger');
           const errorDetail = document.createElement('div');
-          errorDetail.className = 'text-red-500 text-xs mt-1';
+          errorDetail.className = 'text-danger small mt-1';
           errorDetail.textContent = 'Network error occurred. Please try again.';
           progressElement.appendChild(errorDetail);
         });
         
-        // Send the request
         xhr.open('POST', uploadForm.action, true);
         xhr.send(formData);
       });
     }
     
-    // Helper function to format file size
     function formatFileSize(bytes) {
       if (bytes < 1024) return bytes + ' bytes';
       else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
       else return (bytes / 1048576).toFixed(1) + ' MB';
     }
     
-    // Prevent uploads from being cancelled when navigating away
     window.addEventListener('beforeunload', function(e) {
-      // If there are active uploads, show a confirmation dialog
       if (Object.keys(activeUploads).length > 0) {
         const confirmationMessage = 'You have uploads in progress. Are you sure you want to leave?';
         (e || window.event).returnValue = confirmationMessage;
