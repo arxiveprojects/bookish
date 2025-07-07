@@ -173,27 +173,59 @@ body {
     background: #555;
 }
 
-/* Message bubbles */
+/* Message bubbles (WhatsApp-like) */
 .message-bubble {
-    padding: 10px 15px;
-    border-radius: 18px; /* More rounded corners for bubbles */
+    padding: 6px 8px;
+    border-radius: 8px;
     margin-bottom: 8px;
-    max-width: 75%;
+    max-width: 80%; /* Slightly wider for better text flow */
     word-wrap: break-word;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13); /* Subtle shadow */
 }
 
 .message-bubble.user {
-    background-color: var(--meta-primary-blue);
-    color: #ffffff;
+    background-color: #dcf8c6; /* WhatsApp green for sender */
+    color: #1c1e21;
     margin-left: auto;
-    border-bottom-right-radius: 4px; /* Pointed corner for user message */
+    border-bottom-right-radius: 0; /* Flat corner for the tail side */
+}
+
+.message-bubble.user::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-bottom-color: #dcf8c6;
+    border-right-color: #dcf8c6;
+    border-bottom-left-radius: 8px; /* Rounded corner for the tail */
+    transform: translateX(50%) translateY(50%) rotate(270deg);
 }
 
 .message-bubble.ai {
-    background-color: var(--meta-gray-background);
-    color: var(--meta-text-color);
+    background-color: #ffffff; /* White for receiver */
+    color: #1c1e21;
     margin-right: auto;
-    border-bottom-left-radius: 4px; /* Pointed corner for AI message */
+    border-bottom-left-radius: 0; /* Flat corner for the tail side */
+}
+
+.message-bubble.ai::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-bottom-color: #ffffff;
+    border-left-color: #ffffff;
+    border-bottom-right-radius: 8px; /* Rounded corner for the tail */
+    transform: translateX(-50%) translateY(50%) rotate(90deg);
 }
 
 /* Adjustments for specific elements */
@@ -248,4 +280,25 @@ body {
 
 .h1 {
     font-size: 2rem !important;
+}
+
+/* Adjustments for the chat UI on smaller screens */
+@media (max-width: 576px) {
+    #chat-box {
+        min-height: 30vh; /* Adjust for smaller screens */
+        max-height: 60vh; /* Adjust for smaller screens */
+    }
+
+    .message-bubble {
+        max-width: 100%; /* Allow bubbles to take full width */
+        font-size: 0.9rem;
+    }
+
+    .chat-input-form {
+        padding: 8px 10px;
+    }
+
+    .chat-input-form input[type="text"] {
+        padding: 8px 12px;
+    }
 }

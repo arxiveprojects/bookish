@@ -1,7 +1,7 @@
 <!-- Chat UI -->
 <div class="w-100 mx-auto" style="max-width: 800px;">
     <!-- Chat Box -->
-    <div id="chat-box" class="overflow-auto shadow-lg rounded-3 p-4 bg-light" style="height: 500px;">
+    <div id="chat-box" class="overflow-auto shadow-lg rounded-3 p-4 bg-light" style="min-height: 40vh; max-height: 70vh;">
       <div id="messages" hx-get="{% url 'messages' book.id %}" hx-trigger="load" hx-swap="innerHTML">
         <!-- Messages will be loaded here -->
       </div>

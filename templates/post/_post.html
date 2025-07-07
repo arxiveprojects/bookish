@@ -3,7 +3,7 @@
 <div class="card shadow-sm mb-4 mx-auto" style="max-width: 40rem;">
     {% include 'post/_post_header.html' %}
     <div class="card-body bg-light">
-        <div class="d-flex justify-content-center align-items-center p-3">
+        <div class="d-flex justify-content-center align-items-center">
             {% if book.cover %}
                 <img src="{{ book.cover.url }}" class="img-fluid rounded shadow-sm" style="max-height: 500px;" alt="{{book.title}} Book Cover">
             {% else %}

@@ -1,13 +1,15 @@
 {% load static %}
-<header class="navbar fixed-top">
-    <div class="container">
+<header class="navbar fixed-top px-0 ">
+    <div class="container d-flex justify-content-between align-items-center">
         <a class="navbar-brand" href="{% url 'book_list' %}">
             <img src="{% static 'img/favicon.png' %}" alt="book logo" width="30" height="30" class="d-inline-block align-top me-2">
+        <span class="d-none d-sm-inline">
             Bookish
+        </span>
         </a>
-        <div class="d-flex align-items-center ms-auto">
-            <form action="{% url 'book_search' %}" method="get" class="d-flex me-3">
-                <input name="q" class="form-control rounded-pill" type="search" placeholder="Search..." aria-label="Search" style="width: 250px;">
+        <div class="d-flex align-items-center ms-auto flex-grow-1 justify-content-end">
+            <form action="{% url 'book_search' %}" method="get" class="d-flex w-100 w-md-auto me-3">
+                <input name="q" class="form-control rounded-pill" type="search" placeholder="Search..." aria-label="Search">
             </form>
             {% if not request.user.is_authenticated %}
                 <a href="{% url 'login' %}" class="btn btn-primary">
