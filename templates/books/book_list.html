@@ -5,19 +5,6 @@
   <h4 class="text-center">There is no book</h4>
 </div>
 {% else %}
-{% for book in books %}
-  <div 
-    {% if forloop.last %}
-      hx-get="{% url 'more_books' %}?offset=3"
-      hx-trigger="revealed"
-      hx-swap="afterend"
-    {% endif %}
-  >
-    {% include 'post/_post.html' %}
-    {% if forloop.last %}
-      <span class="visually-hidden">Loading...</span>
-    {% endif %}
-  </div>
-{% endfor %}
+  {% include 'partial/_book_list.html' %}
 {% endif %}
 {% endblock content %}
